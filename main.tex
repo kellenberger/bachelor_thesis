@@ -11,6 +11,8 @@
     urlcolor=black
 }
 \usepackage[a4paper,width=150mm,top=25mm,bottom=25mm,bindingoffset=6mm]{geometry}
+\usepackage{biblatex}
+\addbibresource{bibliography.bib}
 
 \begin{document}
 
@@ -22,6 +24,12 @@
 \date{Day Month Year}
 
 \maketitle
+
+\chapter*{Abstract}
+\input{chapters/abstract}
+
+\chapter*{Acknowledgements}
+\input{chapters/acknowledgements}
 
 \tableofcontents
 
@@ -39,6 +47,8 @@
 
 \chapter{Conclusion}
 \input{chapters/conclusion}
+
+\printbibliography
 
 \appendix
 \chapter{Appendix}

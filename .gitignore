@@ -3,3 +3,7 @@
 *.toc
 *.out
 *.pdf
+*.bbl
+*.bcf
+*.blg
+*.xml
