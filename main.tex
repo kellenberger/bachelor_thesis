@@ -1,6 +1,7 @@
 \documentclass[12pt, twoside]{report}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
+\graphicspath{ {images/} }
 \usepackage{hyperref}
 \hypersetup{
     colorlinks,
@@ -10,15 +11,14 @@
     urlcolor=black
 }
 \usepackage[a4paper,width=150mm,top=25mm,bottom=25mm,bindingoffset=6mm]{geometry}
-\graphicspath{ {images/} }
 
 \begin{document}
 
 \title{
 	{Thesis Title}\\
-	{\large Institution Name}
+	{\large University of Bern}
 }
-\author{Author Name}
+\author{Sven Kellenberger}
 \date{Day Month Year}
 
 \maketitle
@@ -27,6 +27,18 @@
 
 \chapter{Introduction}
 \input{chapters/introduction}
+
+\chapter{Background}
+\input{chapters/background}
+
+\chapter{The Sequence-to-Sequence Model}
+\input{chapters/seq2seq_model}
+
+\chapter{Experiments and Results}
+\input{chapters/experiments_and_results}
+
+\chapter{Conclusion}
+\input{chapters/conclusion}
 
 \appendix
 \chapter{Appendix}
