@@ -2,6 +2,34 @@
 
 \subsection{LSTM}
 
+Recurrent neural networks (RNN) are a special form of neural network that is used for sequential tasks. It works by having multiple copies of the network, one for each timestep. As the input proceeds in time, each network passes information to it's next instance as seen in INSERT FIGURE HERE. At timestep \(t\) the hidden state vector \(h_t\) is updated as follows:
+
+\begin{equation*}
+  h_t = \tanh( W \begin{pmatrix} x_t \\ h_{t-1} \end{pmatrix})
+\end{equation*}
+
+\noindent where \(x_t\) is the input at timestep \(t\) and \(W\) is a parameter matrix.
+
+However, RNNs have proven to be hard to train, especially on long-range dependencies \cite{hochreiter_rnn}. In theory, they should be able to deal with these dependencies but either vanishing or exploding gradients usually prevent them from doing so. To solve this issue, Long Short-Term Memory networks (LSTMs) \cite{lstm} were proposed. In addition to \(h_t\), LSTMs also pass a memory state vector \(c_t\) to the next instance as can be seen in INSERT FIGUER HERE. The LSTM can choose at each timestep if it wants to read or forget information from the memory vector or write new information onto the vector. This is done by using explicit gating mechanisms:
+
+\begin{align*}
+  f_t &= \sigma(W_f \begin{pmatrix} x_t \\ h_{t-1} \end{pmatrix}) &
+  i_t &= \sigma(W_i \begin{pmatrix} x_t \\ h_{t-1} \end{pmatrix}) \\
+  o_t &= \sigma(W_o \begin{pmatrix} x_t \\ h_{t-1} \end{pmatrix}) &
+  g_t &= \tanh(W_g \begin{pmatrix} x_t \\ h_{t-1} \end{pmatrix})
+\end{align*}
+
+\noindent where \(\sigma\) is the sigmoid function. \(f_t\), \(i_t\) and \(o_t\) can be thought of as binary gates that decide which information from \(c_{t-1}\) should be deleted, which information of \(c_{t-1}\) should be updated and which information from \(c_t\) should be written to \(h_t\).  Finally \(g_t\) is a vector of possible values that (gated by \(i_t\)) can be added to \(c_{t-1}\) and its values range from \(-1\) to \(1\). The state vectors are then updated as follows:
+
+\begin{align*}
+  c_t &= f_t \odot c_{t-1} + i_t \odot g_t \\
+  h_t &= o_t \odot \tanh(c_t)
+\end{align*}
+
+Almost all remarkable results that are achieved today are achieved using either LSTMs or networks with a similar architecture like Gated Recurrent Units (GRUs) because they are easier to train and excel at capturing long range dependencies.
+
+
+
 \subsection{Attention-Mechanism}
 
 \subsection{The Sequence-to-Sequence Model}
