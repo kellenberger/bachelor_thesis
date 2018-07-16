@@ -2,37 +2,71 @@
 
 \subsection{LSTM}
 
-Recurrent neural networks (RNN) are a special form of neural network that is used for sequential tasks. It works by having multiple copies of the network, one for each timestep. As the input proceeds in time, each network passes information to it's next instance as seen in INSERT FIGURE HERE. At timestep \(t\) the hidden state vector \(h_t\) is updated as follows:
+Recurrent neural networks (RNN)\cite{rnn} are a special form of neural network that is used for sequential tasks. It works by having multiple copies of the network, one for each timestep. As the input proceeds in time, each network passes information to it's next instance as seen in  \textcolor{red}{INSERT FIGURE HERE}. For an input sequence \((\mathbf{x}_1, ..., \mathbf{x}_n)\) the RNN produces at each timestep \(t\) a hidden state vector \(\mathbf{h}_t\) as follows:
 
 \begin{equation*}
-  h_t = \tanh( W \begin{pmatrix} x_t \\ h_{t-1} \end{pmatrix})
+  \mathbf{h}_t = \tanh \left(\mathbf{W} \begin{pmatrix} \mathbf{x}_t \\ \mathbf{h}_{t-1} \end{pmatrix} \right)
 \end{equation*}
 
-\noindent where \(x_t\) is the input at timestep \(t\) and \(W\) is a parameter matrix.
-
-However, RNNs have proven to be hard to train, especially on long-range dependencies \cite{hochreiter_rnn}. In theory, they should be able to deal with these dependencies but either vanishing or exploding gradients usually prevent them from doing so. To solve this issue, Long Short-Term Memory networks (LSTMs) \cite{lstm} were proposed. In addition to \(h_t\), LSTMs also pass a memory state vector \(c_t\) to the next instance as can be seen in INSERT FIGUER HERE. The LSTM can choose at each timestep if it wants to read or forget information from the memory vector or write new information onto the vector. This is done by using explicit gating mechanisms:
+However, RNNs have proven to be hard to train, especially on long-range dependencies \cite{hochreiter_rnn}. In theory, they should be able to deal with these dependencies but either vanishing or exploding gradients usually prevent them from doing so. To solve this issue, Long Short-Term Memory networks (LSTMs) \cite{lstm} were proposed. In addition to \(\mathbf{h}_t\), LSTMs also pass a memory state vector \(\mathbf{c}_t\) to the next instance as can be seen in \textcolor{red}{INSERT FIGURE HERE}. The LSTM can choose at each timestep if it wants to read or forget information from the memory vector or write new information onto the vector. This is done by using explicit gating mechanisms:
 
 \begin{align*}
-  f_t &= \sigma(W_f \begin{pmatrix} x_t \\ h_{t-1} \end{pmatrix}) &
-  i_t &= \sigma(W_i \begin{pmatrix} x_t \\ h_{t-1} \end{pmatrix}) \\
-  o_t &= \sigma(W_o \begin{pmatrix} x_t \\ h_{t-1} \end{pmatrix}) &
-  g_t &= \tanh(W_g \begin{pmatrix} x_t \\ h_{t-1} \end{pmatrix})
+  \mathbf{f}_t &= \sigma \left(\mathbf{W}_f \begin{pmatrix} \mathbf{x}_t \\ \mathbf{h}_{t-1} \end{pmatrix} \right) &
+  \mathbf{i}_t &= \sigma \left(\mathbf{W}_i \begin{pmatrix} \mathbf{x}_t \\ \mathbf{h}_{t-1} \end{pmatrix} \right) \\
+  \mathbf{o}_t &= \sigma \left(\mathbf{W}_o \begin{pmatrix} \mathbf{x}_t \\ \mathbf{h}_{t-1} \end{pmatrix} \right) &
+  \mathbf{g}_t &= \tanh \left(\mathbf{W}_g \begin{pmatrix} \mathbf{x}_t \\ \mathbf{h}_{t-1} \end{pmatrix} \right)
 \end{align*}
 
-\noindent where \(\sigma\) is the sigmoid function. \(f_t\), \(i_t\) and \(o_t\) can be thought of as binary gates that decide which information from \(c_{t-1}\) should be deleted, which information of \(c_{t-1}\) should be updated and which information from \(c_t\) should be written to \(h_t\).  Finally \(g_t\) is a vector of possible values that (gated by \(i_t\)) can be added to \(c_{t-1}\) and its values range from \(-1\) to \(1\). The state vectors are then updated as follows:
+\noindent where \(\sigma\) is the sigmoid function. \(\mathbf{f}_t\), \(\mathbf{i}_t\) and \(\mathbf{o}_t\) can be thought of as binary gates that decide which information from \(\mathbf{c}_{t-1}\) should be deleted, which information of \(\mathbf{c}_{t-1}\) should be updated and which information from \(\mathbf{c}_t\) should be written to \(\mathbf{h}_t\).  Finally \(\mathbf{g}_t\) is a vector of possible values that (gated by \(\mathbf{i}_t\)) can be added to \(\mathbf{c}_{t-1}\) and because of the \(\tanh\) in the equation its values may range from \texttt{-1} to \texttt{1}. The state vectors are then updated as follows:
 
 \begin{align*}
-  c_t &= f_t \odot c_{t-1} + i_t \odot g_t \\
-  h_t &= o_t \odot \tanh(c_t)
+  \mathbf{c}_t &= \mathbf{f}_t \odot \mathbf{c}_{t-1} + \mathbf{i}_t \odot \mathbf{g}_t \\
+  \mathbf{h}_t &= \mathbf{o}_t \odot \tanh(\mathbf{c}_t)
 \end{align*}
 
 Almost all remarkable results that are achieved today are achieved using either LSTMs or networks with a similar architecture like Gated Recurrent Units (GRUs) because they are easier to train and excel at capturing long range dependencies.
 
+\subsection{The Sequence-to-Sequence Model}
 
+Traditional Deep Neural Networks (DNNs) process the whole input and then calculate some output, e.g. process an image and then classify it. This works well for problems where the input and the output are of a fixed dimension, however it is not suitable for problems where the input and the output are sequences of variable length. An example would be the input of a question and the network should produce an answer. We have seen that we can use LSTMs to process input sequences of variable length. However, in this case we want to process the whole input sequence and all the information that comes with it and only then start generating an output sequence. These problems are called sequence to sequence problems.
+
+In \cite{seq2seq} the Sequence-to-Sequence Model is introduced as a solution to these problems. The model was applied to the task of Neural Machine Translation (NMT) and has since become the state of the art architecture in this field. The main concept can be seen in \textcolor{red}{FIGURE X}. First the whole input sequence is fed into the network and the output is ignored. Then we input an end-of-sequence token \texttt{<EOS>} which signals the network to start producing the output. From there on the produced output tokens are fed to the network until the an end-of-sequence token is generated, thus signaling the end of the sequence. To speed up training the expected output is fed back to the network and not the actual produced output.
+
+This architecture is further improved by splitting the network into two separate LSTMs (\textcolor{red}{FIGURE}). The first network takes all the input and encodes it into a vector which is then used to initialize the second network. It is first fed a start token \texttt{<GO>} and then the generated output until the end of the sequence is reached.
 
 \subsection{Attention-Mechanism}
 
-\subsection{The Sequence-to-Sequence Model}
+Attention is a relative new concept for neural networks. The idea is to allow the network to chose on which information to focus at any given moment. For example in \cite{visual_attention} attention is used on the task of high resolution image classification. These kind of networks often struggle with memory constraints and attention can help them to only load the significant part of the image into the memory.
+
+Attention has subsequently been applied to NMT \cite{attention_luong,attention_bahdanau}. The vector into which the input is encoded in the Sequence-to-Sequence model has been identified as a bottleneck which cuts down performance because of its limited capacity. After all the vector is of fixed dimensionality and needs to encode information about the whole input sequence. Because of that attention is used as a mean for the decoder to peek at previous hidden states of the encoder. This is done via a context vector \(\tilde{\mathbf{c}}_t\) which is combined with the current hidden state of the decoder \(\mathbf{h}_t\). The resulting attentional hidden state \(\tilde{\mathbf{h}}_t\) is then used by the decoder to generate the next output.
+
+\begin{equation*}
+  \tilde{\mathbf{h}}_t = \tanh \left(\mathbf{W}_c \begin{pmatrix} \tilde{\mathbf{c}}_t \\ \mathbf{h}_{t} \end{pmatrix} \right)
+\end{equation*}
+
+For the derivation of the context vector \(\tilde{\mathbf{c}}_t\) all hidden states of the encoder \(\bar{\mathbf{h}}_s\) are considered. For this an alignment vector \(\mathbf{a}_t\), whose size equals the input sequence length, is calculated from the current decoder hidden state \(\mathbf{h}_t\) and the encoder hidden states \(\bar{\mathbf{h}}_s\).
+
+\begin{equation*}
+  a_t(s) = \frac
+            {\exp(\score(\mathbf{h}_t, \bar{\mathbf{h}}_s))}
+            {\sum_{s'} \exp(\score(\mathbf{h}_t, \bar{\mathbf{h}}_{s'}))}
+\end{equation*}
+
+\(\score\) is a content-based function used to compare the decoder hidden state \(\mathbf{h}_t\) with each of the encoder hidden states \(\bar{\mathbf{h}}_s\). There are various possible choices for this function, for example:
+
+\begin{equation*}
+  \score(\mathbf{h}_t, \bar{\mathbf{h}}_s) =
+  \begin{cases}
+    \mathbf{h}_t^\intercal \mathbf{W}_a \bar{\mathbf{h}}_s \\
+    \mathbf{v}_a^\intercal \tanh \left(\mathbf{W}_a \begin{pmatrix} \mathbf{h}_t \\ \bar{\mathbf{h}}_s \end{pmatrix} \right)
+  \end{cases}
+\end{equation*}
+
+The context vector \(\mathbf{c}_t\) is then calculated as the weighted average over the encoder hidden states.
+
+\begin{equation*}
+  \mathbf{c}_t = \sum_{s'} a_t(s') \bar{\mathbf{h}}_{s'}
+\end{equation*}
 
 \section{Implementation}
 

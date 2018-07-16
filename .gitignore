@@ -2,8 +2,9 @@
 *.log
 *.toc
 *.out
-*.pdf
 *.bbl
 *.bcf
 *.blg
 *.xml
+*.lof
+*.lot

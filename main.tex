@@ -1,58 +1,101 @@
-\documentclass[12pt, twoside]{report}
-\usepackage[utf8]{inputenc}
-\usepackage{graphicx}
-\graphicspath{ {images/} }
-\usepackage{hyperref}
-\hypersetup{
-    colorlinks,
-    citecolor=black,
-    filecolor=black,
-    linkcolor=black,
-    urlcolor=black
-}
-\usepackage[a4paper,width=150mm,top=25mm,bottom=25mm,bindingoffset=6mm]{geometry}
-\usepackage{biblatex}
-\addbibresource{bibliography.bib}
+\documentclass[a4paper]{report}
+
+\usepackage{natbib}
+\bibpunct{[}{]}{,}{a}{}{;}
+\usepackage{fancyheadings}
+\usepackage{iamdip}
+\usepackage[pdftex]{graphicx}
+\usepackage{subfig}
 \usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{listings}
+
+\usepackage{pdfpages}
+
+
+\headrulewidth 0.5pt \addtolength{\headheight}{5pt}
+
+\lhead[\fancyplain{}{\rm\thepage}]{\fancyplain{}{\rightmark}}
+\rhead[\fancyplain{}{\leftmark}]{\fancyplain{}{\rm\thepage}}
+\cfoot{}
+
+\graphicspath{{../Figures/}}
+
+\DeclareMathOperator{\score}{score}
 
 \begin{document}
 
-\title{
-	{Thesis Title}\\
-	{\large University of Bern}
-}
-\author{Sven Kellenberger}
-\date{Day Month Year}
+\pagestyle{fancyplain} \thispagestyle{empty}
 
+\title{TITLE}
+\author{NAME}
+\betreuer{TITLE NAME}
+\ort{Bern}
+\datum{YEAR}
+
+\pagenumbering{roman} \setcounter{page}{1}
 \maketitle
 
-\chapter*{Abstract}
+\newpage
+\thispagestyle{empty}
+\vspace{8cm}
+\noindent
+{\centerline {\bf \large Abstract}}
+\vspace{1cm}
+
+
+\noindent
+
 \input{chapters/abstract}
 
-\chapter*{Acknowledgements}
-\input{chapters/acknowledgements}
-
+\pagenumbering{roman} \setcounter{page}{1}
 \tableofcontents
+\newpage{\pagestyle{empty} \cleardoublepage}
+
+\pagenumbering{arabic} \setcounter{page}{1}
+\pagestyle{fancy}
 
 \chapter{Introduction}
 \input{chapters/introduction}
+\newpage{\pagestyle{empty} \cleardoublepage}
 
 \chapter{Background}
 \input{chapters/background}
+\newpage{\pagestyle{empty} \cleardoublepage}
 
 \chapter{Model and Training}
 \input{chapters/model_and_training}
+\newpage{\pagestyle{empty} \cleardoublepage}
 
 \chapter{Experiments and Results}
 \input{chapters/experiments_and_results}
+\newpage{\pagestyle{empty} \cleardoublepage}
 
 \chapter{Conclusion}
 \input{chapters/conclusion}
+\newpage{\pagestyle{empty} \cleardoublepage}
 
-\printbibliography
-
-\appendix
+\begin{appendix}
 \chapter{Appendix}
-\input{chapters/appendix}
+\include{chapters/appendix}
+\newpage{\pagestyle{empty} \cleardoublepage}
+\end{appendix}
+
+\addcontentsline{toc}{chapter}{\numberline{}List of Tables}
+\listoftables
+
+\addcontentsline{toc}{chapter}{\numberline{}List of Figures}
+\listoffigures
+
+\addcontentsline{toc}{chapter}{\numberline{}Bibliography}
+\bibliographystyle{alphadin}
+\nocite{*}
+\bibliography{bibliography}
+
+\includepdf{Erklaerung.pdf}
 
 \end{document}
