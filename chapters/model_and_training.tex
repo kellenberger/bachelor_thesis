@@ -2,7 +2,7 @@
 
 \subsection{LSTM}
 
-Recurrent neural networks (RNN)\cite{rnn} are a special form of neural network that is used for sequential tasks. It works by having multiple copies of the network, one for each timestep. As the input proceeds in time, each network passes information to it's next instance as seen in  \textcolor{red}{INSERT FIGURE HERE}. For an input sequence \((\mathbf{x}_1, ..., \mathbf{x}_n)\) the RNN produces at each timestep \(t\) a hidden state vector \(\mathbf{h}_t\) as follows:
+A recurrent neural network (RNN)\cite{rnn} is a special form of neural network that is used for sequential tasks. It works by having multiple copies of the network, one for each timestep. As the input proceeds in time, each network passes information to it's next instance as seen in  \textcolor{red}{INSERT FIGURE HERE}. For an input sequence \((\mathbf{x}_1, ..., \mathbf{x}_n)\) the RNN produces at each timestep \(t\) a hidden state vector \(\mathbf{h}_t\) as follows:
 
 \begin{equation*}
   \mathbf{h}_t = \tanh \left(\mathbf{W} \begin{pmatrix} \mathbf{x}_t \\ \mathbf{h}_{t-1} \end{pmatrix} \right)
@@ -24,7 +24,7 @@ However, RNNs have proven to be hard to train, especially on long-range dependen
   \mathbf{h}_t &= \mathbf{o}_t \odot \tanh(\mathbf{c}_t)
 \end{align*}
 
-Almost all remarkable results that are achieved today are achieved using either LSTMs or networks with a similar architecture like Gated Recurrent Units (GRUs) because they are easier to train and excel at capturing long range dependencies.
+Almost all remarkable results that are achieved today are achieved using either LSTMs or networks with a similar architecture like Gated Recurrent Units (GRUs) \cite{gru} because they are easier to train and excel at capturing long range dependencies.
 
 \subsection{The Sequence-to-Sequence Model}
 
