@@ -5,7 +5,8 @@
 \usepackage{fancyheadings}
 \usepackage{iamdip}
 \usepackage[pdftex]{graphicx}
-\usepackage{subfig}
+\usepackage{caption}
+\usepackage{subcaption}
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{amssymb}
@@ -23,7 +24,8 @@
 \rhead[\fancyplain{}{\leftmark}]{\fancyplain{}{\rm\thepage}}
 \cfoot{}
 
-\graphicspath{{../Figures/}}
+% \graphicspath{{../Figures/}}
+\graphicspath{ {images/} }
 
 \DeclareMathOperator{\score}{score}
 
@@ -32,10 +34,10 @@
 \pagestyle{fancyplain} \thispagestyle{empty}
 
 \title{TITLE}
-\author{NAME}
+\author{Sven Kellenberger}
 \betreuer{TITLE NAME}
 \ort{Bern}
-\datum{YEAR}
+\datum{01.08.2018}
 
 \pagenumbering{roman} \setcounter{page}{1}
 \maketitle
@@ -92,7 +94,7 @@
 \listoffigures
 
 \addcontentsline{toc}{chapter}{\numberline{}Bibliography}
-\bibliographystyle{alphadin}
+\bibliographystyle{plaindin}
 \nocite{*}
 \bibliography{bibliography}
 
