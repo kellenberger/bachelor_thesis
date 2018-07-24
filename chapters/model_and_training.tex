@@ -34,6 +34,8 @@ In \cite{seq2seq} the Sequence-to-Sequence Model is introduced as a solution to 
 
 This architecture is further improved by splitting the network into two separate LSTMs (\textcolor{red}{FIGURE}). The first network takes all the input and encodes it into a vector which is then used to initialize the second network. It is first fed a start token \texttt{<GO>} and then the generated output until the end of the sequence is reached.
 
+The network usually operates at word level and uses some word embedding like word2vec \cite{word2vec}. This method has the advantage of giving the input words some meaning through the embedding instead of just inputting a meaningless encoding of the word. While this is very effective for translation tasks, there are some limitations to this method. These embeddings work on a fixed size vocabulary which means that out of vocabulary words (OOV) can't be handled. Also special character sequences like \texttt{:)} pose a problem.
+
 \subsection{Attention-Mechanism}
 
 Attention is a relatively new concept for neural networks. The idea is to allow the network to chose on which information to focus at any given moment. For example in \cite{visual_attention} attention is used on the task of high resolution image classification. These kind of networks often struggle with memory constraints and attention can help them to only load the significant part of the image into the memory.

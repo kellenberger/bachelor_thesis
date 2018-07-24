@@ -1,11 +1,49 @@
 \section{Motivation}
-Automatic text correction is a ubiquitous technology in our today world. Every smartphone, every word processing software, every browser provides some form of spelling error detection and correction for text input. These systems usually rely on a dictionary of correct words \cite{dictionary_correction, digram_correction} or some machine learning algorithm \cite{seq2seq_on_text_correction} to find errors and possible corrections.
+Automatic text correction is a ubiquitous technology in our today world. Every smartphone, every word processing software, every browser provides some form of spelling error detection and correction for text input and these tools have proven to be very useful for both language learners and native speakers. These systems usually rely on a dictionary of correct words \cite{dictionary_correction, digram_correction} or some machine learning algorithm \cite{seq2seq_on_text_correction} to find errors and possible corrections.
 
-Source code is very sensitive to errors of all kinds and therefore this functionality is also desirable for code editors. The syntax of a programming language is strictly defined which enables integrated development environments (IDEs) to detect syntax errors before the program is even run. Of course the possibilities of an IDE are limited by the properties of the programming language, e.g. is it strongly typed or weakly typed. However, the error detection in source code is mostly limited to syntax errors, while semantic and logical errors show only at runtime or sometimes go completely unnoticed. These kinds of errors are also the hardest ones to fix. In a strongly typed language like Java, a lot of possible errors in naming and accessing attributes can be eliminated, because each variable has to be initiated before it is used and the type of the variables is known at all times and therefore also their available attributes and methods. In weakly typed languages like Ruby however, one can not determine what type of object a variable holds before runtime. This creates additional sources of runtime errors.
+Source code is very sensitive to syntax, semantic and logical errors (see Table \ref{error_table} for definition) and therefore a similar functionality is desirable for code editors. The syntax of a programming language is strictly defined which enables integrated development environments (IDEs) to detect syntax errors before the program is even run. Of course the possibilities of an IDE are limited by the properties of the programming language, e.g. is it strongly typed or weakly typed. However, the error detection in source code is mostly limited to syntax errors, while semantic and logical errors show only at runtime or sometimes go completely unnoticed. These kinds of errors are also the hardest ones to fix. In a strongly typed language like Java, a lot of possible errors in naming and accessing attributes can be eliminated, because each variable has to be initiated before it is used and the type of the variables is known at all times and therefore also their available attributes and methods. In weakly typed languages like Ruby however, one can not determine what type of object a variable holds before runtime. This creates additional sources of runtime errors.
 
 While syntax errors can be detected by a suitable algorithm, traditional algorithms can only hope to help prevent semantic and logical errors. This is where machine learning algorithms could step in. In the past years, deep neural networks have proven to be very effective in learning generalised concepts and applying them to single cases. For example in \cite{style_transfer} a network is trained to transfer the style of a painting to a video sequence. That's why it should also be possible to train a network to recognize and correct certain logic errors in source code.
 
 The aim of this project is it to train a character based sequence-to-sequence model on the task of source code correction. The implementation of the model is based on the neural machine translation (NMT) model provided by Tensorflow \cite{seq2seq_tutorial}. As a dataset the Java Github Corpus \cite{java_dataset} is used as a source of correct data. This data is then perturbed as random syntax, semantic and logic errors are added. The performance of different model architectures is then evaluated for the introduced errors.
+
+\begin{table}[t!]
+\begin{tabular}{ | m{2cm}  m{35mm}  m{55mm} | }
+  \hline
+  Error Type & Definition & Example \\
+  \hline
+  syntax &
+  Violation of the specified syntax of the programming language. &
+  \begin{lstlisting}
+  public int add(int a, int b){
+    int sum := a + b;
+    return sum;
+  }
+  \end{lstlisting}
+  \\
+  semantic &
+  Incorrect usage of a variable or statement. &
+  \begin{lstlisting}
+  public void add(int a, int b){
+    int sum = a + b;
+    return sum;
+  }
+  \end{lstlisting}
+  \\
+  logical &
+  Failure to comply with the programs requirements. &
+  \begin{lstlisting}
+  public int add(int a, int b){
+    int sum = a - b;
+    return sum;
+  }
+  \end{lstlisting}
+  \\
+  \hline
+\end{tabular}
+\caption{The definition of syntax, semantic and logical error in the context of programming languages.}
+\label{error_table}
+\end{table}
 
 \section{Outline}
 
