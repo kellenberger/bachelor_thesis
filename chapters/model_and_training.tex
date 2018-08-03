@@ -101,11 +101,12 @@ The Corpus was crawled from Github and includes only projects which were forked 
 
 \subsection{Preprocessing}
 
-Several operations were performed during preprocessing for each file separately:
+Several operations were performed during preprocessing for each Java file in the dataset separately:
 
 \begin{enumerate}
-  \item All comments were removed from the file, because they irrelevant for error detection and increase the sequence length.
-  \item All consecutive whitespaces and line breaks were replaced by one single whitespace. Again, this was done to reduce sequence length because Java is a whitespace insensitive programming language, i.e. a Java program is still valid (albeit hard to understand) if it is put on a single line.
+  \item All comments were removed from the file, because they are irrelevant for error detection and increase the sequence length.
+  \item Line breaks were replaced by an end-of-line token.
+  \item All unnecessary whitespaces were removed. This was also done to reduce sequence length because Java is a whitespace insensitive programming language, i.e. a Java program is still valid (albeit harder to understand) if its indentation is removed.
   \item If the file still contained non-ASCII characters, it was discarded. The purpose of this was to get rid of very rare characters, to reduce the input and output space and to avoid encoding errors.
   \item All method declarations were extracted from the file and checked on their corruptibility. This means, that all corruptions (see subsection \ref{corruption}) had to be able to be applied to the method.
   \item All suitable methods were then written to new files (ca. 100MB each), one method per line.
@@ -113,5 +114,73 @@ Several operations were performed during preprocessing for each file separately:
 
 \subsection{Corruption}
 \label{corruption}
+
+\clearpage
+\thispagestyle{empty}
+\begin{landscape}
+  \centering
+  \begin{tabular}{ | m{2cm} m{2cm}  m{8cm}  m{55mm} | }
+    \hline
+    Corruption & Error Type & Explanation & Example \\
+    \hline
+    missing bracket &
+    syntax &
+    A random bracket (opening or closing, regular, curved or squared) is selected and removed from the source. &
+    \begin{lstlisting}
+    public int add(int a, int b){
+      int sum := a + b;
+      return sum;
+    }
+    \end{lstlisting}
+    \\
+    missing semicolon &
+    syntax &
+    A random semicolon is selected and removed from the source. &
+    \begin{lstlisting}
+    public void add(int a, int b){
+      int sum = a + b;
+      return sum;
+    }
+    \end{lstlisting}
+    \\
+    misspelled variable &
+    semantic &
+    A random variable which is being declared in the source is selected. A random occurrence of the variable (not the one in the declaration) is then selected and misspelled. Possible misspellings are: removal of a random character, insertion of a random character, switch of two adjacent characters. &
+    \begin{lstlisting}
+    public int add(int a, int b){
+      int sum = a - b;
+      return sum;
+    }
+    \end{lstlisting}
+    \\
+    incorrect return type &
+    semantic &
+    The return type of the methods is changed. There are only two possibilities. If the return type is \texttt{void}, it is changed to one of Java's primitive data types (\texttt{int}, \textt{float}, etc.). In any other case, the return type is changed to \texttt{void}. &
+    \begin{lstlisting}
+    public int add(int a, int b){
+      int sum = a - b;
+      return sum;
+    }
+    \end{lstlisting}
+    \\
+    switched lines &
+    logic &
+    Two adjacent statement lines are switched in their order. As statement lines qualify variable declarations, assignments and method invocations. To increase the probability of an error, only lines of different types are switched. &
+    \begin{lstlisting}
+    public int add(int a, int b){
+      int sum = a - b;
+      return sum;
+    }
+    \end{lstlisting}
+    \\
+    \hline
+  \end{tabular}
+  \captionof{table}{Table caption}
+  \label{corruption_table}
+\end{landscape}
+
+The corruption of the data was done randomly during training. 75\% of the data was left uncorrupted, meaning that the source sequence and the target sequence were identical. To the other 25\% one of five corruptions was applied, with each one being equally frequent.
+
+Of the possible corruptions, two produced syntax errors, two semantic errors and one logic errors.
 
 \section{Implementation}

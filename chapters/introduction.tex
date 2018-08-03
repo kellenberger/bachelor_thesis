@@ -7,7 +7,7 @@ While syntax errors can be detected by a suitable algorithm, traditional algorit
 
 The aim of this project is it to train a character based sequence-to-sequence model on the task of source code correction. The implementation of the model is based on the neural machine translation (NMT) model provided by Tensorflow \cite{seq2seq_tutorial}. As a dataset the Java Github Corpus \cite{java_dataset} is used as a source of correct data. This data is then perturbed as random syntax, semantic and logic errors are added. The performance of different model architectures is then evaluated for the introduced errors.
 
-\begin{table}[t!]
+\begin{table}[t]
 \begin{tabular}{ | m{2cm}  m{35mm}  m{55mm} | }
   \hline
   Error Type & Definition & Example \\
