@@ -24,6 +24,7 @@ Of course the methods described so far do still not take the context of the text
 However, even though these methods perform well on the errors they were designed for, a large amount of different classifiers is needed to catch every error. This is a costly and inflexible approach. Recent research often uses statistical machine translation methods or language models and n-grams to correct errors of multiple classes \cite{grammatical_error_task}. In \cite{seq2seq_on_text_correction} the authors train an encoder-decoder neural network with an attention mechanism which operates at the character level. \cite{seq2seq_keyboard} chose a similar approach applied to keyboard decoding on smartphones.
 
 \section{Automatic Correction of Source Code}
+\label{code_correction_section}
 
 Of course automatic error correction is also a useful helper for writing code. Because of the well-defined syntax of a programming language, syntactical errors are relatively easy to find using an algorithm. This functionality can help novice programmers to avoid typical beginner's errors like a missing semicolon at the end of the line. However, semantic and logical errors can usually not be detected this easily.
 

@@ -47,7 +47,7 @@ Almost all state-of-the-art results today are achieved using either LSTMs or net
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.9\linewidth]{seq2seq}
-\caption{The Sequence-to-Sequence Model applied to a translation example. The English source sentence is fed to the model word by word. After the input of an end-of-sequence token (\texttt{<eos>}), the network starts producing the output sentence in French. For this the produced output tokens are fed back to the network at the next timestep. The network signals the end of the sequence by another such token.}
+\caption{The Sequence-to-Sequence Model applied to a translation example. The English source sentence is fed to the model word by word. After the input of an end-of-sequence token (\texttt{<eos>}), the network starts producing the output sentence in French. For this the produced output tokens are fed back to the network at the next timestep. The network signals the end of the sequence by outputting another \texttt{<eos>} token.}
 \label{seq2seq}
 \end{figure}
 
@@ -94,5 +94,24 @@ The context vector \(\mathbf{c}_t\) is then calculated as the weighted average o
 \end{equation*}
 
 \section{Dataset Construction}
+
+For this thesis, the data from the Java Github Corpus \cite{java_dataset} was chosen. As elaborated in section \ref{code_correction_section}, a weakly typed programming language like Python would be preferable over a strongly typed one like Java because a lot of errors in Java can already be found algorithmically. However, there is a general lack of large, diverse datasets of source code thus the selection of the Java Github Corpus. Furthermore, the model knows nothing of the structure and rules of the programming language and therefore the capability of the model to grasp certain concepts can still be tested.
+
+The Corpus was crawled from Github and includes only projects which were forked at least once to assure a certain measure of quality. It consists of around 15,000 projects which amount to approximately 15GB of data.
+
+\subsection{Preprocessing}
+
+Several operations were performed during preprocessing for each file separately:
+
+\begin{enumerate}
+  \item All comments were removed from the file, because they irrelevant for error detection and increase the sequence length.
+  \item All consecutive whitespaces and line breaks were replaced by one single whitespace. Again, this was done to reduce sequence length because Java is a whitespace insensitive programming language, i.e. a Java program is still valid (albeit hard to understand) if it is put on a single line.
+  \item If the file still contained non-ASCII characters, it was discarded. The purpose of this was to get rid of very rare characters, to reduce the input and output space and to avoid encoding errors.
+  \item All method declarations were extracted from the file and checked on their corruptibility. This means, that all corruptions (see subsection \ref{corruption}) had to be able to be applied to the method.
+  \item All suitable methods were then written to new files (ca. 100MB each), one method per line.
+\end{enumerate}
+
+\subsection{Corruption}
+\label{corruption}
 
 \section{Implementation}
