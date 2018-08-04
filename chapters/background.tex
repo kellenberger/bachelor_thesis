@@ -30,8 +30,7 @@ Of course automatic error correction is also a useful helper for writing code. B
 
 Of course the correctability of a programming language depends in part on its properties. One important distinction is between strongly typed and weakly typed programming languages \cite{pl_typing}. In a strongly typed programming language, every variable has a fixed type and every method has a fixed return type. This enables an editor program to check if the expected and the actual type match before runtime. This error can then be flagged and shown to the user. In contrast, in a weakly typed programming language, variables don't have a fixed type. They can contain whatever value one assigns to them and similarly methods can take arguments of any type and also return values of any type. In this case, an error of an operation which gets an unexpected parameter type only shows at runtime. For example on the one hand, the type error in
 
-\lstset{belowskip=3mm}
-\begin{lstlisting}
+\begin{lstlisting}[style=inline]
 public void printNumber(String n){
   System.out.println("Number: " + n);
 }
@@ -41,13 +40,12 @@ printNumber(9);
 \noindent can be detected before runtime because Java is a strongly typed programming language. The type of the parameter \texttt{n} is defined as \texttt{String} and the method invocation with an argument of type \texttt{int} is clearly wrong. On the other hand the type error in
 
 \lstset{language=Python}
-\begin{lstlisting}
+\begin{lstlisting}[style=inline]
 def print_number(n):
   print("Number: " + n)
 print_number(9)
 \end{lstlisting}
 \lstset{language=Java}
-\lstset{belowskip=0mm}
 
 \noindent shows only at runtime. Python is a weakly typed language and in general it can not be determined of which type a variable is allowed to be before runtime. Only when the code is executed, the \texttt{+} operator looks at its arguments and throws an error if their types don't match.
 

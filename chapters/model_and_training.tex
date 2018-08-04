@@ -95,6 +95,8 @@ The context vector \(\mathbf{c}_t\) is then calculated as the weighted average o
 
 \section{Dataset Construction}
 
+To train the model, a big dataset containing incorrect code examples and corrections with a large variety is needed. However such a dataset does not exist yet because the correction of erroneous code is a long and tedious work. That's why the errors have to be self introduced which of course is a non trivial task.
+
 For this thesis, the data from the Java Github Corpus \cite{java_dataset} was chosen. As elaborated in section \ref{code_correction_section}, a weakly typed programming language like Python would be preferable over a strongly typed one like Java because a lot of errors in Java can already be found algorithmically. However, there is a general lack of large, diverse datasets of source code thus the selection of the Java Github Corpus. Furthermore, the model knows nothing of the structure and rules of the programming language and therefore the capability of the model to grasp certain concepts can still be tested.
 
 The Corpus was crawled from Github and includes only projects which were forked at least once to assure a certain measure of quality. It consists of around 15,000 projects which amount to approximately 15GB of data.
@@ -115,72 +117,54 @@ Several operations were performed during preprocessing for each Java file in the
 \subsection{Corruption}
 \label{corruption}
 
-\clearpage
-\thispagestyle{empty}
-\begin{landscape}
-  \centering
-  \begin{tabular}{ | m{2cm} m{2cm}  m{8cm}  m{55mm} | }
-    \hline
-    Corruption & Error Type & Explanation & Example \\
-    \hline
-    missing bracket &
-    syntax &
-    A random bracket (opening or closing, regular, curved or squared) is selected and removed from the source. &
-    \begin{lstlisting}
-    public int add(int a, int b){
-      int sum := a + b;
-      return sum;
-    }
-    \end{lstlisting}
-    \\
-    missing semicolon &
-    syntax &
-    A random semicolon is selected and removed from the source. &
-    \begin{lstlisting}
-    public void add(int a, int b){
-      int sum = a + b;
-      return sum;
-    }
-    \end{lstlisting}
-    \\
-    misspelled variable &
-    semantic &
-    A random variable which is being declared in the source is selected. A random occurrence of the variable (not the one in the declaration) is then selected and misspelled. Possible misspellings are: removal of a random character, insertion of a random character, switch of two adjacent characters. &
-    \begin{lstlisting}
-    public int add(int a, int b){
-      int sum = a - b;
-      return sum;
-    }
-    \end{lstlisting}
-    \\
-    incorrect return type &
-    semantic &
-    The return type of the methods is changed. There are only two possibilities. If the return type is \texttt{void}, it is changed to one of Java's primitive data types (\texttt{int}, \textt{float}, etc.). In any other case, the return type is changed to \texttt{void}. &
-    \begin{lstlisting}
-    public int add(int a, int b){
-      int sum = a - b;
-      return sum;
-    }
-    \end{lstlisting}
-    \\
-    switched lines &
-    logic &
-    Two adjacent statement lines are switched in their order. As statement lines qualify variable declarations, assignments and method invocations. To increase the probability of an error, only lines of different types are switched. &
-    \begin{lstlisting}
-    public int add(int a, int b){
-      int sum = a - b;
-      return sum;
-    }
-    \end{lstlisting}
-    \\
-    \hline
-  \end{tabular}
-  \captionof{table}{Table caption}
-  \label{corruption_table}
-\end{landscape}
+\afterpage{
+  \clearpage
+  \pagestyle{empty}
+  \begin{landscape}
+    \begin{table}[t]
+      \centering
+      \begin{tabular}{ | m{4cm} m{2cm}  m{9cm}  m{5cm} | }
+        \hline
+        Corruption & Error Type & Explanation & Example \\
+        \hline
+        missing bracket &
+        syntax &
+        One random bracket (regular, curved or squared) is selected and removed from the source. &
+        \lstinputlisting{listings/missing_bracket.java}
+        \\
+        missing semicolon &
+        syntax &
+        One random semicolon is selected and removed from the source. &
+        \lstinputlisting{listings/missing_semicolon.java}
+        \\
+        misspelled variable &
+        semantic &
+        A random variable which is being declared in the source is selected. A random occurrence of the variable (not the one in the declaration) is then selected and misspelled. Possible misspellings are: removal of a random character, insertion of a random character, switch of two adjacent characters. &
+        \lstinputlisting{listings/misspelled_variable.java}
+        \\
+        incorrect return type &
+        semantic &
+        The return type of the methods is changed. There are only two possibilities. If the return type is \texttt{void}, it is changed to one of Java's primitive data types (\texttt{int}, \texttt{float}, etc.). In any other case, the return type is changed to \texttt{void}. &
+        \lstinputlisting{listings/incorrect_return_type.java}
+        \\
+        switched lines &
+        logic &
+        Two adjacent statement lines are switched in their order. As statement lines qualify variable declarations, assignments and method invocations. To increase the probability of an error, only lines of different types can be switched. &
+        \lstinputlisting{listings/switched_lines.java}
+        \\
+        \hline
+      \end{tabular}
+      \caption{Implementation details and examples of all corruptions.}
+      \label{corruption_table}
+    \end{table}
+  \end{landscape}
+  \clearpage
+}
 
 The corruption of the data was done randomly during training. 75\% of the data was left uncorrupted, meaning that the source sequence and the target sequence were identical. To the other 25\% one of five corruptions was applied, with each one being equally frequent.
 
-Of the possible corruptions, two produced syntax errors, two semantic errors and one logic errors.
+Of the possible corruptions, two produced syntax errors, two semantic errors and one logic errors. The syntax error consisted of removing a bracket or a semicolon, for the semantic errors a variable was misspelled or the return type of the source changed and the logic errors were produced by switching the order of statement lines. A more detailed explanation of the different corruptions can be found in table \ref{corruption_table}.
 
-\section{Implementation}
+
+
+\section{Model Implementation}
