@@ -95,7 +95,9 @@ The context vector \(\mathbf{c}_t\) is then calculated as the weighted average o
 
 \section{Dataset Construction}
 
-To train the model, a big dataset containing incorrect code examples and corrections with a large variety is needed. However such a dataset does not exist yet because the correction of erroneous code is a long and tedious work. That's why the errors have to be self introduced which of course is a non trivial task.
+To train the model, a big dataset of erroneous code examples produced by real programmers and their respective corrections would be ideal. This would assure a large variety of errors and real life examples. However such a dataset does not exist yet in part because the correction of erroneous code is a long and tedious work.
+
+That's why the errors have to be self introduced to a dataset of correct code. This task is no trivial one and several new difficulties occur. For one, the more sophisticated an error is the harder it is to introduce. Another issue is the artificiality of the errors. One runs the risk of the model picking up on the error generation patterns and thus performing poorly on non-artificial examples. These problems are further discussed in subsection \ref{corruption}.
 
 For this thesis, the data from the Java Github Corpus \cite{java_dataset} was chosen. As elaborated in section \ref{code_correction_section}, a weakly typed programming language like Python would be preferable over a strongly typed one like Java because a lot of errors in Java can already be found algorithmically. However, there is a general lack of large, diverse datasets of source code thus the selection of the Java Github Corpus. Furthermore, the model knows nothing of the structure and rules of the programming language and therefore the capability of the model to grasp certain concepts can still be tested.
 
@@ -114,7 +116,7 @@ Several operations were performed during preprocessing for each Java file in the
   \item All suitable methods were then written to new files (ca. 100MB each), one method per line.
 \end{enumerate}
 
-\subsection{Corruption}
+\subsection{Corruptions and their Limitations}
 \label{corruption}
 
 \afterpage{
@@ -139,7 +141,7 @@ Several operations were performed during preprocessing for each Java file in the
         \\
         misspelled variable &
         semantic &
-        A random variable which is being declared in the source is selected. A random occurrence of the variable (not the one in the declaration) is then selected and misspelled. Possible misspellings are: removal of a random character, insertion of a random character, switch of two adjacent characters. &
+        A random variable which is being declared in the source is selected. A random occurrence of the variable (except the one in the declaration) is then selected and misspelled. Possible misspellings are: removal of a random character, insertion of a random character, switch of two adjacent characters. &
         \lstinputlisting{listings/misspelled_variable.java}
         \\
         incorrect return type &
@@ -161,10 +163,49 @@ Several operations were performed during preprocessing for each Java file in the
   \clearpage
 }
 
+As mentioned earlier, the generation of artificial errors is a challenging task. These errors need to be as sophisticated and as close to reality as possible else the learnt model cannot be applied to real world examples. Also a large variety in the introduced errors would be preferable. However these guidelines are not easy to implement especially for more sophisticated errors. While it is quite easy to introduce syntax errors such as a missing semicolon, the task of automatically and unfailingly generating logic errors is very challenging. That's why this thesis concentrates on five different errors of variable difficulty level.
+
 The corruption of the data was done randomly during training. 75\% of the data was left uncorrupted, meaning that the source sequence and the target sequence were identical. To the other 25\% one of five corruptions was applied, with each one being equally frequent.
 
-Of the possible corruptions, two produced syntax errors, two semantic errors and one logic errors. The syntax error consisted of removing a bracket or a semicolon, for the semantic errors a variable was misspelled or the return type of the source changed and the logic errors were produced by switching the order of statement lines. A more detailed explanation of the different corruptions can be found in table \ref{corruption_table}.
+Of the possible corruptions, two produced syntax errors, two semantic errors and one logic errors. The syntax error consisted of removing a bracket or a semicolon, for the semantic errors a variable was misspelled or the return type of the source changed and the logic errors were produced by switching the order of statement lines. Examples and implementation details of the different corruptions can be found in table \ref{corruption_table}.
 
+Of the five possible corruptions, the syntax errors are the easiest to introduce and come relatively close to reality. They are typical errors that a novice programmer would produce. The other three corruptions produce more sophisticated errors but each one has some limits.
 
+The misspelling of a random variable works generally well. As a convention, the declaration of the variable is considered the "ground truth" and thus only occurrences of the variable after its declaration are misspelled. However there are some cases where the corruption doesn't work as intended. Consider the following code snippet:
+
+\begin{lstlisting}[style=inline]
+public int[] seedToArray(int seed){
+  int[] seeds = new int[1];
+  seeds[0] = seed;
+  return seeds;
+}
+\end{lstlisting}
+
+Lets assume that \texttt{seed} is to be corrupted. One possible misspelling would be to add a random character. If per chance an 's' is added to the end of the occurrence of \texttt{seed} in the third line, it produces another valid variable, namely \texttt{seeds}. Of course the error could still be detected but it is now a logic error and not a semantic one and the model doesn't learn to correct this specific type of error with the other corruptions. It is also possible, that the corruption switches two adjacent characters in \texttt{seed}. If the second and third character are selected it would have no effect and therefore no error would be added. However these two scenarios are very rare and therefore shouldn't impact the ability of the model to learn to find misspelled variables and correct them.
+
+The changing of the return type of the method can be generated consistently. However it imposes some unique problems to the network. One way is pretty simple. If the return type of the method is changed from \texttt{void} to something different, the model needs only check if a return statement is present and if not, the return type should be changed to \texttt{void}. The other way is more complicated. Again the model can determine if the return type \texttt{void} is correct by looking if a return statement is present. However if it determines that it is incorrect the model still needs to derive the correct return type from the given context which is not always possible. For example if the following source is given:
+
+\begin{lstlisting}[style=inline]
+public void incrementAndGetValue(){
+  this.value += 1;
+  return this.value;
+}
+\end{lstlisting}
+
+\noindent the correct return type is not identifiable because \texttt{this.value} is not defined in the context of this method. It could be any numeric type. This is the tradeoff of only looking at method declarations. However even with the full file context the return type could still be defined in another file. Despite this limitation the corruption can still be used to test the limits of what the model can learn.
+
+Lastly logic errors are the most challenging ones to introduce because they require some form of understanding of the source. To keep the errors as realistic as possible, it was decided to just switch the order of two adjacent lines in the method. However this corruption is not guaranteed to produce a logic error. To increase the probability of an error, some restrictions were put into place. Firstly, only variable declarations, assignments or method invocations are considered and secondly only lines of different types can be switched. This increases the probability of a logic error, but it doesn't guarantee it. Consider the following example:
+
+\begin{lstlisting}[style=inline]
+public int squareSum(int a, int b){
+  int squareA;
+  int squareB;
+  squareA = a * a;
+  squareB = b * b;
+  return squareA + squareB;
+}
+\end{lstlisting}
+
+Here the only lines that can be switched are line 3 and 4 but no logic error is produced in doing so. However to guarantee the production of a logic error a deeper understanding of the code would be necessary which is not possible if the errors are produced artificially. Still the corruption is (like the misspelling of variables discussed above) "good enough", meaning it does its purpose most of the time. 
 
 \section{Model Implementation}
