@@ -69,7 +69,7 @@ Attention has subsequently been applied to NMT \cite{attention_luong,attention_b
   \tilde{\mathbf{h}}_t = \tanh \left(\mathbf{W}_c \begin{pmatrix} \tilde{\mathbf{c}}_t \\ \mathbf{h}_{t} \end{pmatrix} \right)
 \end{equation*}
 
-For the derivation of the context vector \(\tilde{\mathbf{c}}_t\) all hidden states of the encoder \(\bar{\mathbf{h}}_s\) are considered. For this an alignment vector \(\mathbf{a}_t\), whose size equals the input sequence length, is calculated from the current decoder hidden state \(\mathbf{h}_t\) and the encoder hidden states \(\bar{\mathbf{h}}_s\). The values of \(a_t\) are then normalized using the \texttt{softmax} function.
+For the derivation of the context vector \(\tilde{\mathbf{c}}_t\) all hidden states of the encoder \(\bar{\mathbf{h}}_s\) are considered. For this an alignment vector \(\mathbf{a}_t\), whose size equals the input sequence length, is calculated from the current decoder hidden state \(\mathbf{h}_t\) and the encoder hidden states \(\bar{\mathbf{h}}_s\). The values of \(a_t\) are then normalized using the softmax function.
 
 \begin{equation*}
   a_t(s) = \frac
@@ -93,31 +93,102 @@ The context vector \(\mathbf{c}_t\) is then calculated as the weighted average o
   \mathbf{c}_t = \sum_{s'} a_t(s') \bar{\mathbf{h}}_{s'}
 \end{equation*}
 
+\section{Model Implementation}
+
+The implementation of the model used in this thesis is mostly based on the NMT model from Tensorflow \cite{seq2seq_tutorial}. The main part consists of an encoder and a decoder with an implementation of the Luong attention mechanism on top \cite{attention_luong}. The encoder and the decoder are both an LSTM cell consisting of 4 layers \`a 256 units each. No embedding was used because the model operates at the character level instead of the word level. This change was necessary because programming languages don't have a fixed vocabulary. The programmer is not restricted in the naming of variables, methods or the like and thus it makes no sense to restrict the model to a fixed vocabulary. This would only result in a lot of OOV tokens. Therefore the input is fed one character at a time to the model while the encoding of the character is simply its ASCII code, meaning a number between 0 and 127.
+
+ As proposed in \cite{seq2seq}, the source sequence was reversed in its order. The idea behind this is to introduce more short term dependencies while the average distance of the dependencies stays the same. Technically this shouldn't have a big effect because the attention mechanism allows the model to take a peak at the encoder state many timesteps ago. However the experiments have shown that this simple transmutation of the input data enables the network to learn faster.
+
+ During backpropagation the gradients were clipped by a fixed norm. This technique is used to prevent the gradient from exploding \cite{gradient_clipping}. The norm chosen for this thesis is 5 but other values would also be possible (1 would be another common choice).
+
+ Cross-entropy was chosen as the loss function. Each timestep the decoder produces some output vector \(\mathbf{y}' = \begin{pmatrix} y_1' & ... & y_n'\end{pmatrix}\). This vector is then normalized using the softmax function to get probabilities \(p_i\) for each possible output.
+
+ \begin{equation*}
+   p_i = \frac
+             {\exp(y_i')}
+             {\sum_{j} \exp(y_j')}
+ \end{equation*}
+
+ These probabilities are then used to compute the cross entropy loss:
+
+ \begin{equation*}
+   l = \sum_{j} y_j * \log(p_i)
+ \end{equation*}
+
+ Here \(\mathbf{y} = \begin{pmatrix} y_1 & ... & y_n \end{pmatrix}\) is a one-hot target vector with \(y_i = 1\) for the desired output \(i\) and \(y_j = 0\) everywhere else.
+
 \section{Dataset Construction}
 
-To train the model, a big dataset of erroneous code examples produced by real programmers and their respective corrections would be ideal. This would assure a large variety of errors and real life examples. However such a dataset does not exist yet in part because the correction of erroneous code is a long and tedious work.
+To train the model, a big dataset of erroneous code examples produced by real programmers including their respective corrections would be ideal. This would assure a large variety of errors and real life examples. However such a dataset does not exist yet in part because the correction of erroneous code is a long and tedious work.
 
-That's why the errors have to be self introduced to a dataset of correct code. This task is no trivial one and several new difficulties occur. For one, the more sophisticated an error is the harder it is to introduce. Another issue is the artificiality of the errors. One runs the risk of the model picking up on the error generation patterns and thus performing poorly on non-artificial examples. These problems are further discussed in subsection \ref{corruption}.
+The best alternative is for the errors to be self introduced to a dataset of correct code. This task is no trivial one and several difficulties have to be taken into account and weighed up against each other. For one, the more sophisticated an error is the harder it is to introduce it consistently, but training a network on only easy errors (like missing semicolons) doesn't produce any added value. Another issue is the artificiality of the errors. One runs the risk of the model picking up on the error generation patterns and thus performing poorly on non-artificial examples. These problems are further discussed in subsection \ref{corruption}.
 
-For this thesis, the data from the Java Github Corpus \cite{java_dataset} was chosen. As elaborated in section \ref{code_correction_section}, a weakly typed programming language like Python would be preferable over a strongly typed one like Java because a lot of errors in Java can already be found algorithmically. However, there is a general lack of large, diverse datasets of source code thus the selection of the Java Github Corpus. Furthermore, the model knows nothing of the structure and rules of the programming language and therefore the capability of the model to grasp certain concepts can still be tested.
+For this thesis, the data from the Java Github Corpus \cite{java_dataset} was chosen. As elaborated in section \ref{code_correction_section}, a weakly typed programming language like Python would be preferable over a strongly typed one like Java because a lot of errors in Java can already be found algorithmically. However, there is a general lack of large, diverse datasets of source code thus the selection of the Java Github Corpus. Furthermore, this thesis doesn't aim at building a fully polished "code corrector" but rather tries to test the boundaries of the possible. Also, the model knows nothing of the structure and rules of the programming language and therefore the capability of the model to grasp certain concepts can still be tested.
 
-The Corpus was crawled from Github and includes only projects which were forked at least once to assure a certain measure of quality. It consists of around 15,000 projects which amount to approximately 15GB of data.
+The dataset was crawled from Github and includes only projects which were forked at least once to assure a certain measure of quality. It consists of around 15,000 projects which amount to approximately 15GB of data.
 
 \subsection{Preprocessing}
 
-Several operations were performed during preprocessing for each Java file in the dataset separately:
+Before the data was used, some preprocessing had to be done. While LSTMs work better than vanilla RNNs on long range dependencies they still have their limits when it comes to input length \cite{timestep_limitation}. Because the input is fed to the network character-by-character rather than word-by-word, the input sequence can get quite long rather quickly. Thus the decision was made, to concentrate on method declarations because they are relatively self-contained and complex enough to introduce advanced errors while also being of manageable length.
+
+The preprocessing was done for each Java file in the dataset separately and consisted of the following steps:
 
 \begin{enumerate}
   \item All comments were removed from the file, because they are irrelevant for error detection and increase the sequence length.
   \item Line breaks were replaced by an end-of-line token.
   \item All unnecessary whitespaces were removed. This was also done to reduce sequence length because Java is a whitespace insensitive programming language, i.e. a Java program is still valid (albeit harder to understand) if its indentation is removed.
-  \item If the file still contained non-ASCII characters, it was discarded. The purpose of this was to get rid of very rare characters, to reduce the input and output space and to avoid encoding errors.
-  \item All method declarations were extracted from the file and checked on their corruptibility. This means, that all corruptions (see subsection \ref{corruption}) had to be able to be applied to the method.
+  \item If the file still contained non-ASCII characters, it was discarded. The purpose of this was to get rid of very rare characters, to reduce the input and output space and most importantly to avoid encoding errors.
+  \item All method declarations were extracted from the file and checked on their corruptibility. This means, that all corruptions (see subsection \ref{corruption}) had to be able to be applied to the method. This assures that the defined corruption rate is met.
   \item All suitable methods were then written to new files (ca. 100MB each), one method per line.
 \end{enumerate}
 
-\subsection{Corruptions and their Limitations}
+This resulted in around 1,7GB of train data.
+
+\subsection{Corruptions}
 \label{corruption}
+
+As mentioned earlier, the generation of artificial errors is a challenging task. These errors need to be as sophisticated and as close to reality as possible else the learnt model cannot be applied to real world examples. Also a large variety in the introduced errors would be preferable. However these guidelines are not easy to implement especially for more sophisticated errors. While it is quite easy to introduce syntax errors such as a missing semicolon, the task of automatically and unfailingly generating logic errors is very challenging. That's why this thesis concentrates on five different errors of variable difficulty level.
+
+The corruption of the data was done randomly during training. Each corruption was applied equally often, while the percentage of uncorrupted examples varied. Of the possible corruptions, two produced syntax errors, two semantic errors and one logic errors. The syntax errors consisted of removing a bracket or a semicolon, for the semantic errors a variable was misspelled or the return type of the method changed and the logic errors were produced by switching the order of two statement lines. Examples and implementation details of the different corruptions can be found in table \ref{corruption_table}.
+
+Of the five possible corruptions, the syntax errors are the easiest to introduce and come relatively close to reality. They are typical errors that a novice programmer would produce and they are also the easiest to correct because the placement of semicolons and brackets follows strict rules. The other three corruptions produce more sophisticated errors but each one has some downsides.
+
+The misspelling of a random variable works generally well. As a convention, the declaration of the variable is considered the "ground truth" and thus only occurrences of the variable after its declaration are misspelled. This is similar to how a traditional error checker would search for misspelled variables. However, there are some cases where the corruption doesn't work as intended. Consider the following code snippet:
+
+\begin{lstlisting}[style=inline]
+public int[] seedToArray(int seed){
+  int[] seeds = new int[1];
+  seeds[0] = seed;
+  return seeds;
+}
+\end{lstlisting}
+
+Lets assume that \texttt{seed} is to be corrupted. One possible misspelling would be to add a random character. If per chance an 's' is added to the end of the occurrence of \texttt{seed} in the third line, it produces another valid variable, namely \texttt{seeds}. Of course the error could still be detected but it is now a different type of error and the model shouldn't catch up on this unless it encounters such errors more frequently. It is also possible, that the corruption switches two adjacent characters in \texttt{seed}. If the second and third character are selected it would have no effect and therefore no error would be added. However these two scenarios are very specific and rare and therefore shouldn't impact the ability of the model to learn to find misspelled variables and correct them.
+
+The other semantic error, the changing of the return type of the method, can be generated consistently but the generation imposes sometimes unsolvable problem to the network. One case is pretty simple. If the return type of the method is changed from \texttt{void} to something different, the model needs only check if a return statement is present and if not, the return type should be changed to \texttt{void}. The second case is more complicated as the return type is changed from one type to \texttt{void}. Again the model can determine if the return type \texttt{void} is correct by looking if a return statement is present. However if it determines that it is incorrect the model still needs to derive the correct return type from the given context which is not always possible. For example if the following source is given:
+
+\begin{lstlisting}[style=inline]
+public void incrementAndGetValue(){
+  this.value += 1;
+  return this.value;
+}
+\end{lstlisting}
+
+\noindent the correct return type is not identifiable because \texttt{this.value} is not defined in the context of this method. It could be any numeric type. This is the tradeoff of only looking at methods opposed to whole files. However even with the full file context the return type could still be defined in another file, for example if the return type is determined by the return type of a method belonging to a different class. Despite this unsolvable problem the corruption can still be used to test the limits of what the model can learn.
+
+Lastly logic errors are the most challenging ones to automatically generate because they require some form of understanding of the source code. To keep the errors relatively realistic, while also keeping the corruption as simple and as accurate as possible, the switching of the order of two adjacent lines in the method was chosen. However this corruption is not guaranteed to always produce a logic error. To further increase the probability of generating an error, some restrictions were put into place. Firstly, only variable declarations, assignments or method invocations were considered and secondly only two adjacent lines which were of a different type could be switched. This increased the probability of the occurrence of a logic error, but it still didn't guarantee it. Consider the following example:
+
+\begin{lstlisting}[style=inline]
+public int squareSum(int a, int b){
+  int squareA;
+  int squareB;
+  squareA = a * a;
+  squareB = b * b;
+  return squareA + squareB;
+}
+\end{lstlisting}
+
+Here the only lines that can be switched according to the restrictions listed above are line 3 and 4 but no logic error is produced in doing so. However to produce logic errors more consistently a deeper understanding of the code would be necessary which is not possible if the errors are to be generated artificially. Having said that, the corruption with its restrictions was still deemed "good enough" to do its purpose which was confirmed by the experiments.
 
 \afterpage{
   \clearpage
@@ -162,50 +233,3 @@ Several operations were performed during preprocessing for each Java file in the
   \end{landscape}
   \clearpage
 }
-
-As mentioned earlier, the generation of artificial errors is a challenging task. These errors need to be as sophisticated and as close to reality as possible else the learnt model cannot be applied to real world examples. Also a large variety in the introduced errors would be preferable. However these guidelines are not easy to implement especially for more sophisticated errors. While it is quite easy to introduce syntax errors such as a missing semicolon, the task of automatically and unfailingly generating logic errors is very challenging. That's why this thesis concentrates on five different errors of variable difficulty level.
-
-The corruption of the data was done randomly during training. 75\% of the data was left uncorrupted, meaning that the source sequence and the target sequence were identical. To the other 25\% one of five corruptions was applied, with each one being equally frequent.
-
-Of the possible corruptions, two produced syntax errors, two semantic errors and one logic errors. The syntax error consisted of removing a bracket or a semicolon, for the semantic errors a variable was misspelled or the return type of the source changed and the logic errors were produced by switching the order of statement lines. Examples and implementation details of the different corruptions can be found in table \ref{corruption_table}.
-
-Of the five possible corruptions, the syntax errors are the easiest to introduce and come relatively close to reality. They are typical errors that a novice programmer would produce. The other three corruptions produce more sophisticated errors but each one has some limits.
-
-The misspelling of a random variable works generally well. As a convention, the declaration of the variable is considered the "ground truth" and thus only occurrences of the variable after its declaration are misspelled. However there are some cases where the corruption doesn't work as intended. Consider the following code snippet:
-
-\begin{lstlisting}[style=inline]
-public int[] seedToArray(int seed){
-  int[] seeds = new int[1];
-  seeds[0] = seed;
-  return seeds;
-}
-\end{lstlisting}
-
-Lets assume that \texttt{seed} is to be corrupted. One possible misspelling would be to add a random character. If per chance an 's' is added to the end of the occurrence of \texttt{seed} in the third line, it produces another valid variable, namely \texttt{seeds}. Of course the error could still be detected but it is now a logic error and not a semantic one and the model doesn't learn to correct this specific type of error with the other corruptions. It is also possible, that the corruption switches two adjacent characters in \texttt{seed}. If the second and third character are selected it would have no effect and therefore no error would be added. However these two scenarios are very rare and therefore shouldn't impact the ability of the model to learn to find misspelled variables and correct them.
-
-The changing of the return type of the method can be generated consistently. However it imposes some unique problems to the network. One way is pretty simple. If the return type of the method is changed from \texttt{void} to something different, the model needs only check if a return statement is present and if not, the return type should be changed to \texttt{void}. The other way is more complicated. Again the model can determine if the return type \texttt{void} is correct by looking if a return statement is present. However if it determines that it is incorrect the model still needs to derive the correct return type from the given context which is not always possible. For example if the following source is given:
-
-\begin{lstlisting}[style=inline]
-public void incrementAndGetValue(){
-  this.value += 1;
-  return this.value;
-}
-\end{lstlisting}
-
-\noindent the correct return type is not identifiable because \texttt{this.value} is not defined in the context of this method. It could be any numeric type. This is the tradeoff of only looking at method declarations. However even with the full file context the return type could still be defined in another file. Despite this limitation the corruption can still be used to test the limits of what the model can learn.
-
-Lastly logic errors are the most challenging ones to introduce because they require some form of understanding of the source. To keep the errors as realistic as possible, it was decided to just switch the order of two adjacent lines in the method. However this corruption is not guaranteed to produce a logic error. To increase the probability of an error, some restrictions were put into place. Firstly, only variable declarations, assignments or method invocations are considered and secondly only lines of different types can be switched. This increases the probability of a logic error, but it doesn't guarantee it. Consider the following example:
-
-\begin{lstlisting}[style=inline]
-public int squareSum(int a, int b){
-  int squareA;
-  int squareB;
-  squareA = a * a;
-  squareB = b * b;
-  return squareA + squareB;
-}
-\end{lstlisting}
-
-Here the only lines that can be switched are line 3 and 4 but no logic error is produced in doing so. However to guarantee the production of a logic error a deeper understanding of the code would be necessary which is not possible if the errors are produced artificially. Still the corruption is (like the misspelling of variables discussed above) "good enough", meaning it does its purpose most of the time. 
-
-\section{Model Implementation}
