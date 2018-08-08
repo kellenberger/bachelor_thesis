@@ -87,10 +87,10 @@ Here, \(\score\) is a content-based function used to compare the decoder hidden 
   \end{cases}
 \end{equation*}
 
-The context vector \(\mathbf{c}_t\) is then calculated as the weighted average over the encoder hidden states.
+The context vector \(\tilde{\mathbf{c}}_t\) is then calculated as the weighted average over the encoder hidden states.
 
 \begin{equation*}
-  \mathbf{c}_t = \sum_{s'} a_t(s') \bar{\mathbf{h}}_{s'}
+  \tilde{\mathbf{c}}_t = \sum_{s'} a_t(s') \bar{\mathbf{h}}_{s'}
 \end{equation*}
 
 \section{Model Implementation}
@@ -112,7 +112,7 @@ The implementation of the model used in this thesis is mostly based on the NMT m
  These probabilities are then used to compute the cross entropy loss:
 
  \begin{equation*}
-   l = \sum_{j} y_j * \log(p_i)
+   l = - \sum_{j} y_j * \log(p_j)
  \end{equation*}
 
  Here \(\mathbf{y} = \begin{pmatrix} y_1 & ... & y_n \end{pmatrix}\) is a one-hot target vector with \(y_i = 1\) for the desired output \(i\) and \(y_j = 0\) everywhere else.
