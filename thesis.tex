@@ -18,7 +18,7 @@
 \usepackage{pdfpages}
 
 \usepackage{listings}
-\usepackage{color}
+\usepackage{xcolor}
 
 \usepackage{pdflscape}
 \usepackage{afterpage}
@@ -32,13 +32,15 @@
 numbers=left,
 xleftmargin=1cm,
 belowskip=3mm,
+moredelim=**[is][\color{red}]{@}{@}
 }
 
 \lstdefinestyle{table}
 {
 numbers=none,
 xleftmargin=0mm,
-belowskip=0mm
+belowskip=0mm,
+moredelim=**[is][\color{red}]{@}{@}
 }
 
 \lstset{frame=none,
@@ -122,8 +124,9 @@ belowskip=0mm
 \newpage{\pagestyle{empty} \cleardoublepage}
 
 \begin{appendix}
-\chapter{Conventions}
-\include{chapters/appendix}
+\chapter{Notations}
+\input{chapters/notation}
+\chapter{Loss}
 \newpage{\pagestyle{empty} \cleardoublepage}
 \end{appendix}
 

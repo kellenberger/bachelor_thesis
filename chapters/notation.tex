@@ -1,0 +1,37 @@
+\section{Naming Conventions}
+
+Vector and matrix variables are written in bold, vectors having lowercase names, matrices uppercase ones.
+
+\begin{equation*}
+  \mathbf{a}_t, \mathbf{B}
+\end{equation*}
+
+If no other indication of the nature of the variable is given, it is a vector resp. matrix of learnt parameters. These variables are often named \(\mathbf{W}\) for matrices and \(\mathbf{v}\) for vectors.
+
+\bigskip
+
+The individual elements of a vector are not written in bold and are indexed with a subscript.
+
+\begin{equation*}
+  \mathbf{a} = \begin{pmatrix} a_1 \\ ... \\ a_n \end{pmatrix}
+\end{equation*}
+
+If the vector already has a subscript, the index of the element is added as an additional subscript.
+
+\begin{equation*}
+  \mathbf{a}_i = \begin{pmatrix} a_{i1} \\ ... \\ a_{in} \end{pmatrix}
+\end{equation*}
+
+\section{Vector Operations}
+
+For \(\mathbf{a}^\intercal = \begin{pmatrix} a_1 & ... & a_n \end{pmatrix}\) and \(\mathbf{b}^\intercal = \begin{pmatrix} b_1 & ... & b_n \end{pmatrix}\), \(\odot\) depicts the elementwise multiplication.
+
+\begin{equation*}
+  \mathbf{a} \odot \mathbf{b} = \begin{pmatrix} a_1 * b_1 \\ ... \\ a_n * b_n \end{pmatrix}
+\end{equation*}
+
+The concatenation of vectors can is abbreviated as follows:
+
+\begin{equation*}
+  \begin{pmatrix} \mathbf{a} \\ \mathbf{b} \end{pmatrix} = \begin{pmatrix} a_1 \\ ... \\ a_n \\ b_1 \\ ... \\ b_n \end{pmatrix}
+\end{equation*}

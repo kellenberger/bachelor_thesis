@@ -69,10 +69,10 @@ Attention has subsequently been applied to NMT \cite{attention_luong,attention_b
   \tilde{\mathbf{h}}_t = \tanh \left(\mathbf{W}_c \begin{pmatrix} \tilde{\mathbf{c}}_t \\ \mathbf{h}_{t} \end{pmatrix} \right)
 \end{equation*}
 
-For the derivation of the context vector \(\tilde{\mathbf{c}}_t\) all hidden states of the encoder \(\bar{\mathbf{h}}_s\) are considered. For this an alignment vector \(\mathbf{a}_t\), whose size equals the input sequence length, is calculated from the current decoder hidden state \(\mathbf{h}_t\) and the encoder hidden states \(\bar{\mathbf{h}}_s\). The values of \(a_t\) are then normalized using the softmax function.
+For the derivation of the context vector \(\tilde{\mathbf{c}}_t\) all hidden states of the encoder \(\bar{\mathbf{h}}_s\) are considered. For this an alignment vector \(\mathbf{a}_t\), whose size equals the input sequence length, is calculated from the current decoder hidden state \(\mathbf{h}_t\) and the encoder hidden states \(\bar{\mathbf{h}}_s\). The values of \(\mathbf{a}_t\) are then normalized using the softmax function.
 
 \begin{equation*}
-  a_t(s) = \frac
+  a_{ts} = \frac
             {\exp(\score(\mathbf{h}_t, \bar{\mathbf{h}}_s))}
             {\sum_{s'} \exp(\score(\mathbf{h}_t, \bar{\mathbf{h}}_{s'}))}
 \end{equation*}
@@ -90,18 +90,18 @@ Here, \(\score\) is a content-based function used to compare the decoder hidden 
 The context vector \(\tilde{\mathbf{c}}_t\) is then calculated as the weighted average over the encoder hidden states.
 
 \begin{equation*}
-  \tilde{\mathbf{c}}_t = \sum_{s'} a_t(s') \bar{\mathbf{h}}_{s'}
+  \tilde{\mathbf{c}}_t = \sum_{s'} a_{ts'} \bar{\mathbf{h}}_{s'}
 \end{equation*}
 
 \section{Model Implementation}
 
-The implementation of the model used in this thesis is mostly based on the NMT model from Tensorflow \cite{seq2seq_tutorial}. The main part consists of an encoder and a decoder with an implementation of the Luong attention mechanism on top \cite{attention_luong}. The encoder and the decoder are both an LSTM cell consisting of 4 layers \`a 256 units each. No embedding was used because the model operates at the character level instead of the word level. This change was necessary because programming languages don't have a fixed vocabulary. The programmer is not restricted in the naming of variables, methods or the like and thus it makes no sense to restrict the model to a fixed vocabulary. This would only result in a lot of OOV tokens. Therefore the input is fed one character at a time to the model while the encoding of the character is simply its ASCII code, meaning a number between 0 and 127.
+The implementation of the model used in this thesis is mostly based on the NMT model from Tensorflow \cite{seq2seq_tutorial}. The main part consists of an encoder and a decoder with an implementation of the Luong attention mechanism on top \cite{attention_luong}. The encoder and the decoder are both an LSTM cell consisting of 4 layers \`a 256 units each. No embedding was used because the model operates at the character level instead of the word level. This change was necessary because programming languages don't have a fixed vocabulary. The programmer is not restricted in the naming of variables, methods or the like and thus it makes no sense to restrict the model to a fixed vocabulary. This would only result in a lot of OOV tokens. Therefore the input is fed one character at a time to the model with the encoding of the character simply being its ASCII code, i.e. a number between 0 and 127.
 
- As proposed in \cite{seq2seq}, the source sequence was reversed in its order. The idea behind this is to introduce more short term dependencies while the average distance of the dependencies stays the same. Technically this shouldn't have a big effect because the attention mechanism allows the model to take a peak at the encoder state many timesteps ago. However the experiments have shown that this simple transmutation of the input data enables the network to learn faster.
+Padding, feeding
 
  During backpropagation the gradients were clipped by a fixed norm. This technique is used to prevent the gradient from exploding \cite{gradient_clipping}. The norm chosen for this thesis is 5 but other values would also be possible (1 would be another common choice).
 
- Cross-entropy was chosen as the loss function. Each timestep the decoder produces some output vector \(\mathbf{y}' = \begin{pmatrix} y_1' & ... & y_n'\end{pmatrix}\). This vector is then normalized using the softmax function to get probabilities \(p_i\) for each possible output.
+ The loss was measured with the cross-entropy loss function. Each timestep the decoder produces some output vector \(\mathbf{y}'^\intercal = \begin{pmatrix} y_1' & ... & y_n'\end{pmatrix}\). This vector is then normalized using the softmax function to get probabilities \(p_i\) for each possible output.
 
  \begin{equation*}
    p_i = \frac
@@ -109,13 +109,13 @@ The implementation of the model used in this thesis is mostly based on the NMT m
              {\sum_{j} \exp(y_j')}
  \end{equation*}
 
- These probabilities are then used to compute the cross entropy loss:
+ These probabilities are then used to compute the cross-entropy loss:
 
  \begin{equation*}
    l = - \sum_{j} y_j * \log(p_j)
  \end{equation*}
 
- Here \(\mathbf{y} = \begin{pmatrix} y_1 & ... & y_n \end{pmatrix}\) is a one-hot target vector with \(y_i = 1\) for the desired output \(i\) and \(y_j = 0\) everywhere else.
+ Here \(\mathbf{y}^\intercal = \begin{pmatrix} y_1 & ... & y_n \end{pmatrix}\) is a one-hot target vector with \(y_i = 1\) for the desired output \(i\) and \(y_j = 0\) everywhere else.
 
 \section{Dataset Construction}
 

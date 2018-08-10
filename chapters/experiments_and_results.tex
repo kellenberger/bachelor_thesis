@@ -1,1 +1,3 @@
  For all experiments training was done for 30.000 iterations while the batch size was set to 64. The max sequence length was set to 300 meaning that only examples of 300 characters or less were evaluated.
+
+  As proposed in \cite{seq2seq}, the source sequence was reversed in its order. The idea behind this is to introduce more short term dependencies while the average distance of the dependencies stays the same. Technically this shouldn't have a big effect because the attention mechanism allows the model to take a peak at the encoder state many timesteps ago. However the experiments have shown that this simple transmutation of the input data enables the network to learn faster.
