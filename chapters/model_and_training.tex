@@ -117,6 +117,8 @@ For inference, the decoder was first fed a start-of-sequence token and after tha
 
  Here \(\mathbf{y}^\intercal = \begin{pmatrix} y_1 & ... & y_n \end{pmatrix}\) is a one-hot target vector with \(y_i = 1\) for the desired output \(i\) and \(y_j = 0\) everywhere else.
 
+ For each setting training was done for 30,000 iterations while the batch size was set to 64. The max sequence length was set to 300 meaning that only examples of 300 characters or less were used to train and evaluate the model.
+
 \section{Dataset Construction}
 
 To train the model, a big dataset of erroneous code examples produced by real programmers including their respective corrections would be ideal. This would assure a large variety of errors and real life examples. However such a dataset does not exist yet in part because the correction of erroneous code is a long and tedious work.

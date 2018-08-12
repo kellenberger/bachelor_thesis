@@ -1,7 +1,3 @@
-For all experiments training was done for 30.000 iterations while the batch size was set to 64. The max sequence length was set to 300 meaning that only examples of 300 characters or less were evaluated.
-
-As proposed in \cite{seq2seq}, the source sequence was reversed in its order. The idea behind this is to introduce more short term dependencies while the average distance of the dependencies stays the same. Technically this shouldn't have a big effect because the attention mechanism allows the model to take a peak at the encoder state many timesteps ago. However the experiments have shown that this simple transmutation of the input data enables the network to learn faster.
-
 \section{Corruption Rate}
 
 \begin{table}[h]
@@ -10,7 +6,13 @@ As proposed in \cite{seq2seq}, the source sequence was reversed in its order. Th
   & NC & MB & MS & VAR & RET & SL \\
   \hline
   \hline
-  100\% & 60.0 & 48.2 & 64.0 & 37.3 & 54.3 & 26.7 \\
+  100\% & 60.0 & 48.2 & 64.0 & \textbf{37.3} & 54.3 & 26.7 \\
+  \hline
+  75\% & \textbf{70.4} & \textbf{51.3} & \textbf{71.8} & 34.4 & \textbf{55.1} & \textbf{42.6} \\
+  \hline
+  50\% & 62.0 & 43.7 & 61.2 & 25.0 & 47.4 & 26.1 \\
+  \hline
+  25\% & 67.9 & 41.6 & 65.6 & 19.6 & 50.3 & 33.3 \\
   \hline
 \end{tabular}
 \caption{Results}
@@ -19,37 +21,371 @@ As proposed in \cite{seq2seq}, the source sequence was reversed in its order. Th
 
 \section{Attention}
 
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.9\linewidth]{attention_chart}
+\caption{Line chart showing the loss of different models over time.}
+\label{attention_chart}
+\end{figure}
+
+As proposed in \cite{seq2seq}, the source sequence was reversed in its order. The idea behind this is to introduce more short term dependencies while the average distance of the dependencies stays the same. Technically this shouldn't have a big effect because the attention mechanism allows the model to take a peak at the encoder state many timesteps ago. However the experiments have shown that this simple transmutation of the input data enables the network to learn faster.
+
 \section{RNN vs. LSTM (vs. GRU)}
 
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.9\linewidth]{cell_type_chart}
+\caption{Line chart showing the loss of different models over time.}
+\label{cell_type_chart}
+\end{figure}
+
 \section{Error analysis}
+
+\subsection{Uncorrupted}
+
+similar characters. *(42), +(43)
+
+incorrect switching of lines
+
+tolerance: 79.6\%
+
+wrong switch: 4.1\%
+
+\subsection{Brackets}
+
+balanced brackets: 77.2\%
+
+matching brackets: 76.9\%
+
+\subsection{Semicolon}
+
+tolerance: 81.7\%
+
+wrong switch: 2.9\%
+
+correct number of semicolons: 97.0\%
+
+\subsection{Variable}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.9\linewidth]{variables_chart}
+\caption{Correction percentage for variables evaluated for different lengths. Only lengths with more than 10 examples were considered.}
+\label{variables_chart}
+\end{figure}
+
+\subsection{Return type}
+
+different percentages
+
+\subsection{Switch}
+
+\begin{table}[h]
+\begin{tabular}{ | m{1cm} | m{1cm} | m{1cm} | m{1cm} | }
+  \hline
+  \(\leftrightarrow\) & VC & MI & AS \\
+  \hline
+  \hline
+  VC & - & 53.3 & \textbf{59.3} \\
+  \hline
+  MI & 0.0 & - & 13.0 \\
+  \hline
+  AS & 0.0 & 9.8 & - \\
+  \hline
+\end{tabular}
+\caption{VC = Variable Declaration, MI = method invocation, AS = assignment.}
+\label{switch_table}
+\end{table}
 
 \section{Showcase}
 
 \begin{table}[p]
 \begin{tabular}{ | m{11cm} | }
   \hline
-  Source \\
+  Uncorrupted \\
   \hline
   \begin{lstlisting}
-private void jButtonSecondColorActionPerformed() {
-  ColorPicker picker = new ColorPicker();
-  if (UIFactory.showDialog(picker)) {
-    Color color = picker.getColor();
-    lblSecondColor.setBackground(color);
+  public final void enable() {
+    FileConfiguration config = new FileConfiguration(NoLagg.plugin);
+    config.load();
+    this.enable(config);
+    config.save();
   }
-}
   \end{lstlisting} \\
   \begin{lstlisting}
-private void jButtonSecondColorActionPerformed() {
-  ColorPicker picker = new ColorPicker();
-  if (UIFactory.showDialog(picker)) {
-    Color color = picker.getColor();
-    lblSecondColor.setBackground(color);
+  public final void enable() {
+   FileConfiguration config = new FileConfiguration(NoLagg.plugin);
+   config.load();
+   this.enable(config);
+   config.save();
   }
-}
+  \end{lstlisting} \\
+  \hline
+  \hline
+  \begin{lstlisting}
+  private Vec4 parseVec4(String s) {
+   Scanner snr = new Scanner(s);
+   Vec4 res = new Vec4();
+   res.x = Float.parseFloat(snr.next());
+   res.y = Float.parseFloat(snr.next());
+   res.z = Float.parseFloat(snr.next());
+   res.w = Float.parseFloat(snr.next());
+   return res;
+  }
+  \end{lstlisting} \\
+  \begin{lstlisting}
+  private Vec4 parseVec4(String s) {
+   Scanner snr = new Scanner(s);
+   Vec4 res = new Vec4();
+   res.x = Float.parseFloat(snr.next());
+   res.y = Float.parseFloat(snr.next());
+   res.$y$ = Float.parseFloat(snr.next());
+   res.w = Float.parseFloat(snr.next());
+   return res;
+  }
   \end{lstlisting} \\
   \hline
 \end{tabular}
 \caption{Example}
-\label{uncorrupted_table}
+\label{uncorrupted_showcase_table}
+\end{table}
+
+\begin{table}[p]
+\begin{tabular}{ | m{11cm} | }
+  \hline
+  Brackets \\
+  \hline
+  \begin{lstlisting}
+  int pop(int numBits) $_$
+   int i = getLeadingAsInt(numBits);
+   truncate(numBits);
+   return i;
+  }
+  \end{lstlisting} \\
+  \begin{lstlisting}
+  int pop(int numBits) ^{^
+   int i = getLeadingAsInt(numBits);
+   truncate(numBits);
+   return i;
+  }
+  \end{lstlisting} \\
+  \hline
+  \hline
+  \begin{lstlisting}
+  protected void outlineShape(Graphics graphics, Rectangle bounds) {
+   PointList pl = setupPoints$_$bounds);
+   graphics.drawPolygon(pl);
+   int add = graphics.getLineWidth() / 2;
+   graphics.drawOval(new Rectangle(ovalX, ovalY, ovalD + add, ovalD + add));
+  }
+  \end{lstlisting} \\
+  \begin{lstlisting}
+  protected void outlineShape(Graphics graphics, Rectangle bounds) {
+   PointList pl = setupPointsbounds$($);
+   graphics.drawPolygon(pl);
+   int add = graphics.getLineWidth() / 2;
+   graphics.drawOval(new Rectangle(ovalX, ovalY, ovalD + add, ovalD + add));
+  }
+  \end{lstlisting} \\
+  \hline
+\end{tabular}
+\caption{Example}
+\label{brackets_showcase_table}
+\end{table}
+
+\begin{table}[p]
+\begin{tabular}{ | m{11cm} | }
+  \hline
+  Semicolons \\
+  \hline
+  \begin{lstlisting}
+  @Override
+  public Method run() {
+   try {
+    final Method mtd = clazz.getMethod("writeReplace")$_$
+    mtd.setAccessible(true);
+    return mtd;
+   } catch (NoSuchMethodException e) {}
+   return null;
+  }
+  \end{lstlisting} \\
+  \begin{lstlisting}
+  @Override
+  public Method run() {
+   try {
+    final Method mtd = clazz.getMethod("writeReplace")^;^
+    mtd.setAccessible(true);
+    return mtd;
+   } catch (NoSuchMethodException e) {}
+   return null;
+  }
+  \end{lstlisting} \\
+  \hline
+  \hline
+  \begin{lstlisting}
+  public void test_hashCode() {
+   ExternalIdWithDates d1a = ExternalIdWithDates.of(IDENTIFIER, VALID_FROM, VALID_TO);
+   ExternalIdWithDates d1b = ExternalIdWithDates.of(IDENTIFIER, VALID_FROM, VALID_TO);
+   assertEquals(d1a.hashCode(), d1b.hashCode())$_$
+  }
+  \end{lstlisting} \\
+  \begin{lstlisting}
+  public void test_hashCode() {
+   ExternalIdWithDates d1a = ExternalIdWithDates.of(IDENTIFIER, VALID_TO);
+   ExternalIdWithDates d1b = ExternalIdWithDates.of(IDENTIFIER, VALID_TO);
+   assertEquals(d1a.hashCode(), d1b.hashCode());
+   $assertEquals(d1a.hashCode(), d1b.hashCode());$
+  }
+  \end{lstlisting} \\
+  \hline
+\end{tabular}
+\caption{Example}
+\label{semicolon_showcase_table}
+\end{table}
+
+\begin{table}[p]
+\begin{tabular}{ | m{11cm} | }
+  \hline
+  Variable \\
+  \hline
+  \begin{lstlisting}
+  private boolean validateOrder(InteractionOperand interactionOperand) {
+   orderedFragments = $interactionOpernd$.getFragments();
+   computeConstraints();
+   return reorderFragmentsInAValidTrace();
+  }
+  \end{lstlisting} \\
+  \begin{lstlisting}
+  private boolean validateOrder(InteractionOperand interactionOperand) {
+   orderedFragments = ^interactionOperand^.getFragments();
+   computeConstraints();
+   return reorderFragmentsInAValidTrace();
+  }
+  \end{lstlisting} \\
+  \hline
+  \hline
+  \begin{lstlisting}
+  @Override
+  public void mouseReleased(MouseEvent e) {
+   popup.setVisible(false);
+   String colorText = "RGB = " + buttonColor.getRed() + ", " + buttonColor.getBreen() + ", " + buttonColor.getBlue();
+   this.setText($colrText$);
+   this.firePropertyChange(COLOR_CHANGE, previousColor, buttonColor);
+  }
+  \end{lstlisting} \\
+  \begin{lstlisting}
+  @Override
+  public void mouseReleased(MouseEvent e) {
+   popup.setVisible(false);
+   String colorText = "RGB = " + buttonColor.getRed() + ", " + buttonColor.getBreen() + ", " + buttonColor.getBlue();
+   this.setText($colrText$);
+   this.firePropertyChange(COLOR_CHANGE, previousColor, buttonColor);
+  }
+  \end{lstlisting} \\
+  \hline
+\end{tabular}
+\caption{Example}
+\label{variable_showcase_table}
+\end{table}
+
+\begin{table}[p]
+\begin{tabular}{ | m{11cm} | }
+  \hline
+  Return type \\
+  \hline
+  \begin{lstlisting}
+  @Override
+  public $void$ toString() {
+   if (eIsProxy()) return super.toString();
+   StringBuffer result = new StringBuffer(super.toString());
+   result.append(" (name: ");
+   result.append(name);
+   result.append(')');
+   return result.toString();
+  }
+  \end{lstlisting} \\
+  \begin{lstlisting}
+  @Override
+  public ^String^ toString() {
+   if (eIsProxy()) return super.toString();
+   StringBuffer result = new StringBuffer(super.toString());
+   result.append(" (name: ");
+   result.append(name);
+   result.append(')');
+   return result.toString();
+  }
+  \end{lstlisting} \\
+  \hline
+  \hline
+  \begin{lstlisting}
+  @Override
+  public $void$ evaluate(final Double...ts) {
+   Validate.isTrue(ts.length == 2);
+   final double tau = ts[0];
+   final double s = ts[1];
+   final double t = maturity - tau;
+   final double temp = vol * Math.pow(s, beta) * localVol.getVolatility(t, s);
+   return -0.5 * temp * temp;
+  }
+  \end{lstlisting} \\
+  \begin{lstlisting}
+  @Override
+  public $Validate$ evaluate(final Double...ts) {
+   $final double tau = ts[0];$
+   $Validate.isTrue(ts.length == 2);$
+   final double s = ts[1];
+   final double t = maturity - tau;
+   final double temp = vol * Math.pow(s, beta) * localVol.getVolatility(t, s);
+   return -0.5 * temp * temp;
+  }
+  \end{lstlisting} \\
+  \hline
+\end{tabular}
+\caption{Example}
+\label{return_type_showcase_table}
+\end{table}
+
+\begin{table}[p]
+\begin{tabular}{ | m{11cm} | }
+  \hline
+  Switch \\
+  \hline
+  \begin{lstlisting}
+  protected void disposeElementInfo(Object element, ElementInfo info) {
+   if (info instanceof ResourceSetInfo) {
+    $resourceSetInfo.dispose();$
+    $ResourceSetInfo resourceSetInfo = (ResourceSetInfo) info;$
+   }
+   super.disposeElementInfo(element, info);
+  }
+  \end{lstlisting} \\
+  \begin{lstlisting}
+  protected void disposeElementInfo(Object element, ElementInfo info) {
+   if (info instanceof ResourceSetInfo) {
+    ^ResourceSetInfo resourceSetInfo = (ResourceSetInfo) info;^
+    ^resourceSetInfo.dispose();^
+   }
+   super.disposeElementInfo(element, info);
+  }
+  \end{lstlisting} \\
+  \hline
+  \hline
+  \begin{lstlisting}
+  private void resolveEntry(Entry < K, T > entry) {
+   $entry.isResolved = true;$
+   $resolved.add(entry);$
+   resolved(entry);
+  }
+  \end{lstlisting} \\
+  \begin{lstlisting}[style=table]
+  private void resolveEntry(Entry < K, T > entry) {
+   $entry.isResolved = true;$
+   $resolved.add(entry);$
+   resolved(entry);
+  }
+  \end{lstlisting} \\
+  \hline
+\end{tabular}
+\caption{Example}
+\label{switch_showcase_table}
 \end{table}
