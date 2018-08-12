@@ -1,4 +1,6 @@
-\section{Corruption Rate}
+\section{Architectural Design Choices}
+
+\subsection{Corruption Rate}
 
 \begin{table}[h]
 \begin{tabular}{ | m{2cm} | m{1cm} | m{1cm} | m{1cm} | m{1cm} | m{1cm} | m{1cm} | }
@@ -16,10 +18,10 @@
   \hline
 \end{tabular}
 \caption{Results}
-\label{result_table}
+\label{corruption_rate_table}
 \end{table}
 
-\section{Attention}
+\subsection{Attention Mechanism}
 
 \begin{figure}[p]
 \centering
@@ -28,9 +30,13 @@
 \label{attention_chart}
 \end{figure}
 
-As proposed in \cite{seq2seq}, the source sequence was reversed in its order. The idea behind this is to introduce more short term dependencies while the average distance of the dependencies stays the same. Technically this shouldn't have a big effect because the attention mechanism allows the model to take a peak at the encoder state many timesteps ago. However the experiments have shown that this simple transmutation of the input data enables the network to learn faster.
+% Table with eval
 
-\section{RNN vs. LSTM (vs. GRU)}
+Of course it can also be asked if the attention mechanism is necessary for the model, after all it increases complexity and training duration. To test this, the model was constructed without an attention mechanism on top of the decoder. This model was then trained twice, once with the same input the regular model got and once with the input reversed. The reversion of the input is a technique proposed in \cite{seq2seq}, the idea being to introduce more short term dependencies while the average distance of the dependencies stays the same. This is not necessary for the regular model because the attention mechanism allows the model to take a peek of the encoder state at any given timestep.
+
+Figure \ref{attention_chart} shows the loss of the different models as a function over iterations.
+
+\subsection{RNN vs. LSTM (vs. GRU)}
 
 \begin{figure}[p]
 \centering
@@ -104,25 +110,25 @@ different percentages
   \hline
   Uncorrupted \\
   \hline
-  \begin{lstlisting}
+  {\begin{lstlisting}[style=table]
   public final void enable() {
     FileConfiguration config = new FileConfiguration(NoLagg.plugin);
     config.load();
     this.enable(config);
     config.save();
   }
-  \end{lstlisting} \\
-  \begin{lstlisting}
+  \end{lstlisting}} \\
+  {\begin{lstlisting}[style=table]
   public final void enable() {
    FileConfiguration config = new FileConfiguration(NoLagg.plugin);
    config.load();
    this.enable(config);
    config.save();
   }
-  \end{lstlisting} \\
+  \end{lstlisting}} \\
   \hline
   \hline
-  \begin{lstlisting}
+  {\begin{lstlisting}[style=table]
   private Vec4 parseVec4(String s) {
    Scanner snr = new Scanner(s);
    Vec4 res = new Vec4();
@@ -132,8 +138,8 @@ different percentages
    res.w = Float.parseFloat(snr.next());
    return res;
   }
-  \end{lstlisting} \\
-  \begin{lstlisting}
+  \end{lstlisting}} \\
+  {\begin{lstlisting}[style=table]
   private Vec4 parseVec4(String s) {
    Scanner snr = new Scanner(s);
    Vec4 res = new Vec4();
@@ -143,7 +149,7 @@ different percentages
    res.w = Float.parseFloat(snr.next());
    return res;
   }
-  \end{lstlisting} \\
+  \end{lstlisting}} \\
   \hline
 \end{tabular}
 \caption{Example}
@@ -155,38 +161,38 @@ different percentages
   \hline
   Brackets \\
   \hline
-  \begin{lstlisting}
+  {\begin{lstlisting}[style=table]
   int pop(int numBits) $_$
    int i = getLeadingAsInt(numBits);
    truncate(numBits);
    return i;
   }
-  \end{lstlisting} \\
-  \begin{lstlisting}
+  \end{lstlisting}} \\
+  {\begin{lstlisting}[style=table]
   int pop(int numBits) ^{^
    int i = getLeadingAsInt(numBits);
    truncate(numBits);
    return i;
   }
-  \end{lstlisting} \\
+  \end{lstlisting}} \\
   \hline
   \hline
-  \begin{lstlisting}
+  {\begin{lstlisting}[style=table]
   protected void outlineShape(Graphics graphics, Rectangle bounds) {
    PointList pl = setupPoints$_$bounds);
    graphics.drawPolygon(pl);
    int add = graphics.getLineWidth() / 2;
    graphics.drawOval(new Rectangle(ovalX, ovalY, ovalD + add, ovalD + add));
   }
-  \end{lstlisting} \\
-  \begin{lstlisting}
+  \end{lstlisting}} \\
+  {\begin{lstlisting}[style=table]
   protected void outlineShape(Graphics graphics, Rectangle bounds) {
    PointList pl = setupPointsbounds$($);
    graphics.drawPolygon(pl);
    int add = graphics.getLineWidth() / 2;
    graphics.drawOval(new Rectangle(ovalX, ovalY, ovalD + add, ovalD + add));
   }
-  \end{lstlisting} \\
+  \end{lstlisting}} \\
   \hline
 \end{tabular}
 \caption{Example}
@@ -198,7 +204,7 @@ different percentages
   \hline
   Semicolons \\
   \hline
-  \begin{lstlisting}
+  {\begin{lstlisting}[style=table]
   @Override
   public Method run() {
    try {
@@ -208,8 +214,8 @@ different percentages
    } catch (NoSuchMethodException e) {}
    return null;
   }
-  \end{lstlisting} \\
-  \begin{lstlisting}
+  \end{lstlisting}} \\
+  {\begin{lstlisting}[style=table]
   @Override
   public Method run() {
    try {
@@ -219,24 +225,24 @@ different percentages
    } catch (NoSuchMethodException e) {}
    return null;
   }
-  \end{lstlisting} \\
+  \end{lstlisting}} \\
   \hline
   \hline
-  \begin{lstlisting}
+  {\begin{lstlisting}[style=table]
   public void test_hashCode() {
    ExternalIdWithDates d1a = ExternalIdWithDates.of(IDENTIFIER, VALID_FROM, VALID_TO);
    ExternalIdWithDates d1b = ExternalIdWithDates.of(IDENTIFIER, VALID_FROM, VALID_TO);
    assertEquals(d1a.hashCode(), d1b.hashCode())$_$
   }
-  \end{lstlisting} \\
-  \begin{lstlisting}
+  \end{lstlisting}} \\
+  {\begin{lstlisting}[style=table]
   public void test_hashCode() {
    ExternalIdWithDates d1a = ExternalIdWithDates.of(IDENTIFIER, VALID_TO);
    ExternalIdWithDates d1b = ExternalIdWithDates.of(IDENTIFIER, VALID_TO);
    assertEquals(d1a.hashCode(), d1b.hashCode());
    $assertEquals(d1a.hashCode(), d1b.hashCode());$
   }
-  \end{lstlisting} \\
+  \end{lstlisting}} \\
   \hline
 \end{tabular}
 \caption{Example}
@@ -248,23 +254,23 @@ different percentages
   \hline
   Variable \\
   \hline
-  \begin{lstlisting}
+  {\begin{lstlisting}[style=table]
   private boolean validateOrder(InteractionOperand interactionOperand) {
    orderedFragments = $interactionOpernd$.getFragments();
    computeConstraints();
    return reorderFragmentsInAValidTrace();
   }
-  \end{lstlisting} \\
-  \begin{lstlisting}
+  \end{lstlisting}} \\
+  {\begin{lstlisting}[style=table]
   private boolean validateOrder(InteractionOperand interactionOperand) {
    orderedFragments = ^interactionOperand^.getFragments();
    computeConstraints();
    return reorderFragmentsInAValidTrace();
   }
-  \end{lstlisting} \\
+  \end{lstlisting}} \\
   \hline
   \hline
-  \begin{lstlisting}
+  {\begin{lstlisting}[style=table]
   @Override
   public void mouseReleased(MouseEvent e) {
    popup.setVisible(false);
@@ -272,8 +278,8 @@ different percentages
    this.setText($colrText$);
    this.firePropertyChange(COLOR_CHANGE, previousColor, buttonColor);
   }
-  \end{lstlisting} \\
-  \begin{lstlisting}
+  \end{lstlisting}} \\
+  {\begin{lstlisting}[style=table]
   @Override
   public void mouseReleased(MouseEvent e) {
    popup.setVisible(false);
@@ -281,7 +287,7 @@ different percentages
    this.setText($colrText$);
    this.firePropertyChange(COLOR_CHANGE, previousColor, buttonColor);
   }
-  \end{lstlisting} \\
+  \end{lstlisting}} \\
   \hline
 \end{tabular}
 \caption{Example}
@@ -293,7 +299,7 @@ different percentages
   \hline
   Return type \\
   \hline
-  \begin{lstlisting}
+  {\begin{lstlisting}[style=table]
   @Override
   public $void$ toString() {
    if (eIsProxy()) return super.toString();
@@ -303,8 +309,8 @@ different percentages
    result.append(')');
    return result.toString();
   }
-  \end{lstlisting} \\
-  \begin{lstlisting}
+  \end{lstlisting}} \\
+  {\begin{lstlisting}[style=table]
   @Override
   public ^String^ toString() {
    if (eIsProxy()) return super.toString();
@@ -314,10 +320,10 @@ different percentages
    result.append(')');
    return result.toString();
   }
-  \end{lstlisting} \\
+  \end{lstlisting}} \\
   \hline
   \hline
-  \begin{lstlisting}
+  {\begin{lstlisting}[style=table]
   @Override
   public $void$ evaluate(final Double...ts) {
    Validate.isTrue(ts.length == 2);
@@ -327,18 +333,18 @@ different percentages
    final double temp = vol * Math.pow(s, beta) * localVol.getVolatility(t, s);
    return -0.5 * temp * temp;
   }
-  \end{lstlisting} \\
-  \begin{lstlisting}
+  \end{lstlisting}} \\
+  {\begin{lstlisting}[style=table]
   @Override
   public $Validate$ evaluate(final Double...ts) {
-   $final double tau = ts[0];$
-   $Validate.isTrue(ts.length == 2);$
+   $>$final double tau = ts[0];
+   $>$Validate.isTrue(ts.length == 2);
    final double s = ts[1];
    final double t = maturity - tau;
    final double temp = vol * Math.pow(s, beta) * localVol.getVolatility(t, s);
    return -0.5 * temp * temp;
   }
-  \end{lstlisting} \\
+  \end{lstlisting}} \\
   \hline
 \end{tabular}
 \caption{Example}
@@ -350,40 +356,40 @@ different percentages
   \hline
   Switch \\
   \hline
-  \begin{lstlisting}
+  {\begin{lstlisting}[style=table]
   protected void disposeElementInfo(Object element, ElementInfo info) {
    if (info instanceof ResourceSetInfo) {
-    $resourceSetInfo.dispose();$
-    $ResourceSetInfo resourceSetInfo = (ResourceSetInfo) info;$
+    $>$resourceSetInfo.dispose();
+    $>$ResourceSetInfo resourceSetInfo = (ResourceSetInfo) info;
    }
    super.disposeElementInfo(element, info);
   }
-  \end{lstlisting} \\
-  \begin{lstlisting}
+  \end{lstlisting}} \\
+  {\begin{lstlisting}[style=table]
   protected void disposeElementInfo(Object element, ElementInfo info) {
    if (info instanceof ResourceSetInfo) {
-    ^ResourceSetInfo resourceSetInfo = (ResourceSetInfo) info;^
-    ^resourceSetInfo.dispose();^
+    ^>^ResourceSetInfo resourceSetInfo = (ResourceSetInfo) info;
+    ^>^resourceSetInfo.dispose();
    }
    super.disposeElementInfo(element, info);
   }
-  \end{lstlisting} \\
+  \end{lstlisting}} \\
   \hline
   \hline
-  \begin{lstlisting}
+  {\begin{lstlisting}[style=table]
   private void resolveEntry(Entry < K, T > entry) {
-   $entry.isResolved = true;$
-   $resolved.add(entry);$
+   $>$entry.isResolved = true;
+   $>$resolved.add(entry);
    resolved(entry);
   }
-  \end{lstlisting} \\
-  \begin{lstlisting}[style=table]
+  \end{lstlisting}} \\
+  {\begin{lstlisting}[style=table]
   private void resolveEntry(Entry < K, T > entry) {
-   $entry.isResolved = true;$
-   $resolved.add(entry);$
+   $>$entry.isResolved = true;
+   $>$resolved.add(entry);
    resolved(entry);
   }
-  \end{lstlisting} \\
+  \end{lstlisting}} \\
   \hline
 \end{tabular}
 \caption{Example}
