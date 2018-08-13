@@ -1,8 +1,8 @@
-\section{Architectural Design Choices}
+\section{Architecture and Training}
 
 \subsection{Corruption Rate}
 
-\begin{table}[h]
+\begin{table}[t]
 \begin{tabular}{ | m{2cm} | m{1cm} | m{1cm} | m{1cm} | m{1cm} | m{1cm} | m{1cm} | }
   \hline
   & NC & MB & MS & VAR & RET & SL \\
@@ -21,6 +21,12 @@
 \label{corruption_rate_table}
 \end{table}
 
+Because the source sequence and target sequence are almost the same and the errors are self-introduced, it is fair to ask what the optimal corruption rate for the input is. To test this the model was trained with four different corruption rates, 100\%, 75\%, 50\% and 25\%. The results can be seen in table \ref{corruption_rate_table}.
+
+For almost all corruptions the model trained with a corruption rate of 75\% posts the best result. The models with lower percentages don't pick up on the errors as well while the model with the 100\% corruption rate lacks the ground truth. In general the model learns to correct all of the introduced errors. It performs especially well when inputting a sequence missing a single semicolon which is of course also the simplest task to solve. However the model is also able to correct the other errors reasonably well. A missing bracket or an incorrect return type are corrected most of the time while the model has a little more trouble correcting a misspelled variable or realigning switched lines. A more detailed analysis for the different error types is given in section \ref{error_analysis}.
+
+What's also interesting to see is how well the model performs on uncorrupted sequences. Even the model with 100\% corruption rate, i.e. which never gets an uncorrupted sequence as input, manages to not introduce any new errors into an uncorrupted sequence most of the time. This indicates that the model obtains some understanding of the input and only corrects where necessary.
+
 \subsection{Attention Mechanism}
 
 \begin{figure}[p]
@@ -30,13 +36,15 @@
 \label{attention_chart}
 \end{figure}
 
-% Table with eval
-
 Of course it can also be asked if the attention mechanism is necessary for the model, after all it increases complexity and training duration. To test this, the model was constructed without an attention mechanism on top of the decoder. This model was then trained twice, once with the same input the regular model got and once with the input reversed. The reversion of the input is a technique proposed in \cite{seq2seq}, the idea being to introduce more short term dependencies while the average distance of the dependencies stays the same. This is not necessary for the regular model because the attention mechanism allows the model to take a peek of the encoder state at any given timestep.
 
-Figure \ref{attention_chart} shows the loss of the different models as a function over iterations.
+The experiments revealed the attention mechanism to be an essential part of the model because the models without the mechanism weren't able to solve the given task. These models never learnt to repeat the input sequence probably because they couldn't pass all information from the encoder to the decoder in a single vector.
 
-\subsection{RNN vs. LSTM (vs. GRU)}
+For the first couple of thousand iterations all models learnt roughly the same things, namely the general structure of the desired output. The models would start to begin the output sequence with \texttt{public ...(...)\{} and end and it with \texttt{\}<eos>}. In between they added mostly passages they remembered from training. However after about 4,000 iterations the model with the attention mechanism learnt to utilise the mechanism to its full potential and started repeating the input sequence. This resulted in rapid performance improvement. The loss of the different configurations as a function over iterations can be seen in figure \ref{attention_chart}.
+
+The reversion of the input sequence helped the model to learn a little bit faster and perform a little bit better but overall it made almost no difference. The model was still not able to solve the task.
+
+\subsection{RNN type}
 
 \begin{figure}[p]
 \centering
@@ -45,7 +53,10 @@ Figure \ref{attention_chart} shows the loss of the different models as a functio
 \label{cell_type_chart}
 \end{figure}
 
+In subsection \ref{rnn_types} three types of RNNs were listed: vanilla RNNs, LSTMs and GRUs. In this experiment, for each type a model is trained with the respective RNN type.
+
 \section{Error analysis}
+\label{error_analysis}
 
 \subsection{Uncorrupted}
 
@@ -55,7 +66,7 @@ incorrect switching of lines
 
 tolerance: 79.6\%
 
-wrong switch: 4.1\%
+wrong switch: 4.8\%
 
 \subsection{Brackets}
 
@@ -67,7 +78,7 @@ matching brackets: 76.9\%
 
 tolerance: 81.7\%
 
-wrong switch: 2.9\%
+wrong switch: 3.2\%
 
 correct number of semicolons: 97.0\%
 
@@ -80,6 +91,8 @@ correct number of semicolons: 97.0\%
 \label{variables_chart}
 \end{figure}
 
+Including corrected wrong instance: 45.6\%
+
 \subsection{Return type}
 
 different percentages
@@ -89,10 +102,10 @@ different percentages
 \begin{table}[h]
 \begin{tabular}{ | m{1cm} | m{1cm} | m{1cm} | m{1cm} | }
   \hline
-  \(\leftrightarrow\) & VC & MI & AS \\
+  \(\leftrightarrow\) & VD & MI & AS \\
   \hline
   \hline
-  VC & - & 53.3 & \textbf{59.3} \\
+  VD & - & 53.3 & \textbf{59.3} \\
   \hline
   MI & 0.0 & - & 13.0 \\
   \hline
