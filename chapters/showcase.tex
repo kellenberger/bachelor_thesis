@@ -1,4 +1,4 @@
-This is a showcase
+On the next few pages some examples of the test set with different corruptions are given. For each corruption there is a table with the input and the generated output together with a short explanation.
 
 \clearpage
 \pagestyle{empty}
@@ -6,60 +6,143 @@ This is a showcase
 \begin{table}[p]
 \begin{tabular}{ | m{10cm} | m{10cm} | }
   \hline
-  Uncorrupted Input & Output \\
+  Input & Output \\
   \hline
   {\begin{lstlisting}[style=table]
-  public final void enable() {
-    FileConfiguration config = new FileConfiguration(NoLagg.plugin);
-    config.load();
-    this.enable(config);
-    config.save();
+  @Override
+  public int hashCode() {
+   int hash = getClass().hashCode();
+   hash += hash * 31 + JodaBeanUtils.hashCode(getPaging());
+   hash += hash * 31 + JodaBeanUtils.hashCode(getMarketDatas());
+   return hash;
   }
   \end{lstlisting}} &
   {\begin{lstlisting}[style=table]
-  public final void enable() {
-   FileConfiguration config = new FileConfiguration(NoLagg.plugin);
-   config.load();
-   this.enable(config);
-   config.save();
+  @Override
+  public int hashCode() {
+   int hash = getClass().hashCode();
+   hash += hash * 31 + JodaBeanUtils.hashCode(getPaging());
+   hash += hash * 31 + JodaBeanUtils.hashCode($getMaging()$);
+   return hash;
   }
   \end{lstlisting}} \\
   \hline
   {\begin{lstlisting}[style=table]
-  private Vec4 parseVec4(String s) {
-   Scanner snr = new Scanner(s);
-   Vec4 res = new Vec4();
-   res.x = Float.parseFloat(snr.next());
-   res.y = Float.parseFloat(snr.next());
-   res.z = Float.parseFloat(snr.next());
-   res.w = Float.parseFloat(snr.next());
-   return res;
+  @Test(expectedExceptions = DataNotFoundException.class)
+  public void test_removeHistoricalTimeSeries_versioned_notFoundId() {
+   UniqueId uniqueId = UniqueId.of("DbHts", "0", "0");
+   _htsMaster.remove(uniqueId);
   }
   \end{lstlisting}} &
   {\begin{lstlisting}[style=table]
-  private Vec4 parseVec4(String s) {
-   Scanner snr = new Scanner(s);
-   Vec4 res = new Vec4();
-   res.x = Float.parseFloat(snr.next());
-   res.y = Float.parseFloat(snr.next());
-   res.$y$ = Float.parseFloat(snr.next());
-   res.w = Float.parseFloat(snr.next());
-   return res;
+  @Test(expectedExceptions = DataNotFoundException.class)
+  public void test_removeHistoricalTimeSeries_versioned_notFoundId() {
+   UniqueId uniqueId = UniqueId.of("DbHts", "0", "0");
+   _$i$tsMaster.remove(uniqueId);
   }
+  \end{lstlisting}} \\
+  \hline
+  {\begin{lstlisting}[style=table]
+  public void addCount(int sourceToken, int targetToken, int count) {
+   if (targetToken < sourceToken) {
+    int swap = sourceToken;
+    sourceToken = targetToken;
+    targetToken = swap;
+   }
+   edits[sourceToken][targetToken] += count;
+  }
+  \end{lstlisting}} &
+  {\begin{lstlisting}[style=table]
+  public void addCount(int sourceToken, $_$ int count) {
+   if (targetToken < sourceToken) {
+    int swap = sourceToken;
+    sourceToken = targetToken;
+    targetToken = swap;
+   }
+   edits[sourceToken][targetToken] += count;
+  }
+   $edits[sourceToken][targetToken] += count;$
+  $}$
   \end{lstlisting}} \\
   \hline
 \end{tabular}
-\caption{Example}
+\caption{In this table there are some common mistakes the model sometimes introduces in its output. In the first example the model mixes two lines up because they are very similar. In the second example it manages to reproduce the input sequence correctly but is one-off with one single character. The last example shows how the model sometimes gets stuck in some sort of loop and outputs a part of the input multiple times.}
 \label{uncorrupted_showcase_table}
 \end{table}
 
 \begin{table}[p]
 \begin{tabular}{ | m{10cm} | m{10cm} | }
   \hline
-  Brackets Input & Output \\
+  Input & Output \\
   \hline
   {\begin{lstlisting}[style=table]
-  int pop(int numBits) $_$
+  @Override
+  public Method run() {
+   try {
+    final Method mtd = clazz.getMethod("writeReplace")
+    mtd.setAccessible(true);
+    return mtd;
+   } catch (NoSuchMethodException e) {}
+   return null;
+  }
+  \end{lstlisting}} &
+  {\begin{lstlisting}[style=table]
+  @Override
+  public Method run() {
+   try {
+    final Method mtd = clazz.getMethod("writeReplace")^;^
+    mtd.setAccessible(true);
+    return mtd;
+   } catch (NoSuchMethodException e) {}
+   return null;
+  }
+  \end{lstlisting}} \\
+  \hline
+  {\begin{lstlisting}[style=table]
+  public void test_hashCode() {
+   ExternalIdWithDates d1a = ExternalIdWithDates.of(IDENTIFIER, VALID_FROM, VALID_TO);
+   ExternalIdWithDates d1b = ExternalIdWithDates.of(IDENTIFIER, VALID_FROM, VALID_TO);
+   assertEquals(d1a.hashCode(), d1b.hashCode())
+  }
+  \end{lstlisting}} &
+  {\begin{lstlisting}[style=table]
+  public void test_hashCode() {
+   ExternalIdWithDates d1a = ExternalIdWithDates.of(IDENTIFIER, $_$ VALID_TO);
+   ExternalIdWithDates d1b = ExternalIdWithDates.of(IDENTIFIER, $_$ VALID_TO);
+   assertEquals(d1a.hashCode(), d1b.hashCode())^;^
+   $assertEquals(d1a.hashCode(), d1b.hashCode());$
+  }
+  \end{lstlisting}} \\
+  \hline
+  {\begin{lstlisting}[style=table]
+  public static Message createByeRequest(Dialog dialog) {
+   Message msg = createRequest(dialog, SipMethods.BYE, null)
+   msg.removeExpiresHeader();
+   msg.removeContacts();
+   return msg;
+  }
+  \end{lstlisting}} &
+  {\begin{lstlisting}[style=table]
+  public static Message createByeRequest(Dialog dialog) {
+   Message msg = $cialog$ dialog, SipMethods.BYE, null)^;^
+   msg.removeExpiresHeader();
+   msg.removeContacts();
+   return msg;
+  }
+  \end{lstlisting}} \\
+  \hline
+\end{tabular}
+\caption{These examples show that the insertion of a missing semicolon is no big problem for the model. If the output is incorrect it is only because new errors are introduced by the model similar to the ones seen in Table \ref{uncorrupted_showcase_table}.}
+\label{semicolon_showcase_table}
+\end{table}
+
+\begin{table}[p]
+\begin{tabular}{ | m{10cm} | m{10cm} | }
+  \hline
+  Input & Output \\
+  \hline
+  {\begin{lstlisting}[style=table]
+  int pop(int numBits)
    int i = getLeadingAsInt(numBits);
    truncate(numBits);
    return i;
@@ -90,68 +173,32 @@ This is a showcase
   }
   \end{lstlisting}} \\
   \hline
+  {\begin{lstlisting}[style=table]
+  public void partActivated$_$IWorkbenchPart part) {
+   workbenchPart = part;
+   refreshActions();
+  }
+  \end{lstlisting}} &
+  {\begin{lstlisting}[style=table]
+  public void partActivatedIWorkbenchPart$($part) {
+   workbenchPart = part;
+   refreshActions();
+  }
+  \end{lstlisting}} \\
+  \hline
 \end{tabular}
-\caption{Example}
+\caption{These examples show well what the model is able to do when reinserting a missing bracket. In all three examples the missing bracket is detected and reinserted but only in one example in the right place. The second and the third example are very difficult for the model because there is no whitespace indicating the correct location of the bracket.}
 \label{brackets_showcase_table}
 \end{table}
 
 \begin{table}[p]
 \begin{tabular}{ | m{10cm} | m{10cm} | }
   \hline
-  Semicolons Input & Output \\
-  \hline
-  {\begin{lstlisting}[style=table]
-  @Override
-  public Method run() {
-   try {
-    final Method mtd = clazz.getMethod("writeReplace")$_$
-    mtd.setAccessible(true);
-    return mtd;
-   } catch (NoSuchMethodException e) {}
-   return null;
-  }
-  \end{lstlisting}} &
-  {\begin{lstlisting}[style=table]
-  @Override
-  public Method run() {
-   try {
-    final Method mtd = clazz.getMethod("writeReplace")^;^
-    mtd.setAccessible(true);
-    return mtd;
-   } catch (NoSuchMethodException e) {}
-   return null;
-  }
-  \end{lstlisting}} \\
-  \hline
-  {\begin{lstlisting}[style=table]
-  public void test_hashCode() {
-   ExternalIdWithDates d1a = ExternalIdWithDates.of(IDENTIFIER, VALID_FROM, VALID_TO);
-   ExternalIdWithDates d1b = ExternalIdWithDates.of(IDENTIFIER, VALID_FROM, VALID_TO);
-   assertEquals(d1a.hashCode(), d1b.hashCode())$_$
-  }
-  \end{lstlisting}} &
-  {\begin{lstlisting}[style=table]
-  public void test_hashCode() {
-   ExternalIdWithDates d1a = ExternalIdWithDates.of(IDENTIFIER, VALID_TO);
-   ExternalIdWithDates d1b = ExternalIdWithDates.of(IDENTIFIER, VALID_TO);
-   assertEquals(d1a.hashCode(), d1b.hashCode());
-   $assertEquals(d1a.hashCode(), d1b.hashCode());$
-  }
-  \end{lstlisting}} \\
-  \hline
-\end{tabular}
-\caption{Example}
-\label{semicolon_showcase_table}
-\end{table}
-
-\begin{table}[p]
-\begin{tabular}{ | m{10cm} | m{10cm} | }
-  \hline
-  Variable Input & Output \\
+  Input & Output \\
   \hline
   {\begin{lstlisting}[style=table]
   private boolean validateOrder(InteractionOperand interactionOperand) {
-   orderedFragments = $interactionOpernd$.getFragments();
+   orderedFragments = interactionOpernd.getFragments();
    computeConstraints();
    return reorderFragmentsInAValidTrace();
   }
@@ -169,7 +216,7 @@ This is a showcase
   public void mouseReleased(MouseEvent e) {
    popup.setVisible(false);
    String colorText = "RGB = " + buttonColor.getRed() + ", " + buttonColor.getBreen() + ", " + buttonColor.getBlue();
-   this.setText($colrText$);
+   this.setText(colrText);
    this.firePropertyChange(COLOR_CHANGE, previousColor, buttonColor);
   }
   \end{lstlisting}} &
@@ -183,19 +230,34 @@ This is a showcase
   }
   \end{lstlisting}} \\
   \hline
+  {\begin{lstlisting}[style=table]
+  public void testGetCanonicalGraphSet() {
+   String canon1 = SWPSignatureUtilities.getCanonicalGraphSet(this.set);
+   String canon2 = SWPSignatureUtilities.getCanonicalGraphSet(this.set);
+   assertEquals(cano1n, canon2);
+  }
+  \end{lstlisting}} &
+  {\begin{lstlisting}[style=table]
+  public void testGetCanonicalGraphSet() {
+   String canon1 = SWPSignatureUtilities.getCanonicalGraphSet(this.set);
+   String canon2 = SWPSignatureUtilities.getCanonicalGraphSet(this.set);
+   assertEquals($canon2.$, canon2);
+  }
+  \end{lstlisting}} \\
+  \hline
 \end{tabular}
-\caption{Example}
+\caption{As can be seen in this examples, a misspelled variable is not always detected by the model. And if it is detected it can sometimes be difficult for the model to derive the correct ground truth as seen in the last example.}
 \label{variable_showcase_table}
 \end{table}
 
 \begin{table}[p]
 \begin{tabular}{ | m{10cm} | m{10cm} | }
   \hline
-  Return type Input & Output \\
+  Input & Output \\
   \hline
   {\begin{lstlisting}[style=table]
   @Override
-  public $void$ toString() {
+  public void toString() {
    if (eIsProxy()) return super.toString();
    StringBuffer result = new StringBuffer(super.toString());
    result.append(" (name: ");
@@ -218,7 +280,7 @@ This is a showcase
   \hline
   {\begin{lstlisting}[style=table]
   @Override
-  public $void$ evaluate(final Double...ts) {
+  public void evaluate(final Double...ts) {
    Validate.isTrue(ts.length == 2);
    final double tau = ts[0];
    final double s = ts[1];
@@ -239,15 +301,30 @@ This is a showcase
   }
   \end{lstlisting}} \\
   \hline
+  {\begin{lstlisting}[style=table]
+  public void createFigure() {
+   ResizableCompartmentFigure result = (ResizableCompartmentFigure) super.createFigure();
+   result.setTitleVisibility(false);
+   return result;
+  }
+  \end{lstlisting}} &
+  {\begin{lstlisting}[style=table]
+  public $Resizable$ createFigure() {
+   ResizableCompartmentFigure result = (ResizableCompartmentFigure) super.createFigure();
+   result.setTitleVisibility(false);
+   return result;
+  }
+  \end{lstlisting}} \\
+  \hline
 \end{tabular}
-\caption{Example}
+\caption{The examples show that the model is able to derive the return type of the method from the given context it just doesn't always chose the right type. Furthermore in the second example, there is also a random line switch to be seen.}
 \label{return_type_showcase_table}
 \end{table}
 
 \begin{table}[p]
 \begin{tabular}{ | m{10cm} | m{10cm} | }
   \hline
-  Switch Input & Output \\
+  Input & Output \\
   \hline
   {\begin{lstlisting}[style=table]
   protected void disposeElementInfo(Object element, ElementInfo info) {
@@ -283,8 +360,29 @@ This is a showcase
   }
   \end{lstlisting}} \\
   \hline
+  {\begin{lstlisting}[style=table]
+  protected NodeFigure createMainFigure() {
+   NodeFigure figure = createNodePlate();
+   figure.setLayoutManager(new StackLayout());
+   $>$figure.add(shape);
+   $>$IFigure shape = createNodeShape();
+   contentPane = setupContentPane(shape);
+   return figure;
+  }
+  \end{lstlisting}} &
+  {\begin{lstlisting}[style=table]
+  protected NodeFigure createMainFigure() {
+   NodeFigure figure = createNodePlate();
+   figure.setLayoutManager(new StackLayout());
+   $>$figure.add(shape);
+   $>$IFigure shape = createNodeShape();
+   contentPane = setupContentPane(shape);
+   return figure;
+  }
+  \end{lstlisting}} \\
+  \hline
 \end{tabular}
-\caption{Example}
+\caption{As can be seen in the first example, the model is able to detect a line switch if it results in a variable being used before it is declared. However, this doesn't mean that it is always detected (see the last example). The second example shows, that a line switch doesn't always result in an error which makes it impossible for the model to detect.}
 \label{switch_showcase_table}
 \end{table}
 \end{landscape}

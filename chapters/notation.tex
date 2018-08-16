@@ -1,12 +1,12 @@
 \section{Naming Conventions}
 
-Vector and matrix variables are written in bold, vectors having lowercase names, matrices uppercase ones.
+Vector and matrix variables are always written in bold, vectors having lowercase names, matrices uppercase ones. For example:
 
 \begin{equation*}
   \mathbf{a}_t, \mathbf{B}
 \end{equation*}
 
-If no other indication of the nature of the variable is given, it is a vector resp. matrix of learnt parameters. These variables are often named \(\mathbf{W}\) for matrices and \(\mathbf{v}\) for vectors.
+If no other indication of the nature of the variable is given, it is a vector respectively a matrix of learnt parameters. These variables are often named \(\mathbf{W}\) for matrices and \(\mathbf{v}\) for vectors.
 
 \bigskip
 
@@ -22,9 +22,11 @@ If the vector already has a subscript, the index of the element is added as an a
   \mathbf{a}_i = \begin{pmatrix} a_{i1} \\ ... \\ a_{in} \end{pmatrix}
 \end{equation*}
 
+\pagebreak
+
 \section{Vector Operations}
 
-For \(\mathbf{a}^\intercal = \begin{pmatrix} a_1 & ... & a_n \end{pmatrix}\) and \(\mathbf{b}^\intercal = \begin{pmatrix} b_1 & ... & b_n \end{pmatrix}\), \(\odot\) depicts the elementwise multiplication.
+For \(\mathbf{a}^\intercal = \begin{pmatrix} a_1 & ... & a_n \end{pmatrix}\) and \(\mathbf{b}^\intercal = \begin{pmatrix} b_1 & ... & b_n \end{pmatrix}\), \(\odot\) depicts the elementwise multiplication of two vectors with the same dimensionality.
 
 \begin{equation*}
   \mathbf{a} \odot \mathbf{b} = \begin{pmatrix} a_1 * b_1 \\ ... \\ a_n * b_n \end{pmatrix}
@@ -34,4 +36,10 @@ The concatenation of vectors is abbreviated as follows:
 
 \begin{equation*}
   \begin{pmatrix} \mathbf{a} \\ \mathbf{b} \end{pmatrix} = \begin{pmatrix} a_1 \\ ... \\ a_n \\ b_1 \\ ... \\ b_n \end{pmatrix}
+\end{equation*}
+
+All functions such as \(\tanh\) or \(\sigma\) are applied to a vector elementwise unless specified differently.
+
+\begin{equation*}
+  \tanh \begin{pmatrix} a_1 \\ ... \\ a_n \end{pmatrix} = \begin{pmatrix} \tanh(a_1) \\ ... \\ \tanh(a_n) \end{pmatrix}
 \end{equation*}

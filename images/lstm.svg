@@ -166,9 +166,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="400.54183"
-     inkscape:cy="1037.9642"
+     inkscape:zoom="5.6"
+     inkscape:cx="387.48291"
+     inkscape:cy="1054.7793"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -185,7 +185,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -203,7 +203,7 @@
          id="tspan934"
          x="36.482288"
          y="62.146236"
-         style="stroke-width:0.26458332"></tspan></text>
+         style="stroke-width:0.26458332" /></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:0.565;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 77.674,41.015624 c 4.64,0 4.64,0 4.64,0"
@@ -565,24 +565,27 @@
        d="m 100.51529,35.113909 c 0,-9.693157 0,-9.693157 0,-9.693157"
        id="path2638"
        inkscape:connector-curvature="0" />
-    <ellipse
-       style="fill:#87de87;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.065;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke fill markers"
-       id="path2584-9"
-       cx="100.51529"
-       cy="29.630247"
-       rx="1.1024867"
-       ry="1.0857824" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:2.82222223px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="99.685707"
-       y="30.401949"
-       id="text2588-1"><tspan
-         sodipodi:role="line"
-         id="tspan2586-4"
-         x="99.685707"
+    <g
+       id="g986">
+      <ellipse
+         ry="1.0857824"
+         rx="1.1024867"
+         cy="29.630247"
+         cx="100.51529"
+         id="path2584-9"
+         style="fill:#87de87;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.065;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke fill markers" />
+      <text
+         id="text2588-1"
          y="30.401949"
-         style="font-size:2.82222223px;stroke-width:0.26458332">x</tspan></text>
+         x="99.685707"
+         style="font-style:normal;font-weight:normal;font-size:2.82222223px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-size:2.82222223px;stroke-width:0.26458332"
+           y="30.401949"
+           x="99.685707"
+           id="tspan2586-4"
+           sodipodi:role="line">x</tspan></text>
+    </g>
     <path
        sodipodi:type="star"
        style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke fill markers"
@@ -601,24 +604,27 @@
        inkscape:transform-center-x="-0.01131322"
        inkscape:transform-center-y="-0.34614047"
        transform="matrix(0.01630007,-0.78323064,0.78323064,0.01630007,94.167938,37.705502)" />
-    <ellipse
-       style="fill:#87de87;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.065;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke fill markers"
-       id="path2584-8"
-       cx="100.56584"
-       cy="22.631126"
-       rx="1.1024867"
-       ry="1.0857824" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:2.82222223px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="99.383484"
-       y="23.515827"
-       id="text2588-9"><tspan
-         sodipodi:role="line"
-         id="tspan2586-8"
-         x="99.383484"
+    <g
+       id="g1054">
+      <ellipse
+         ry="1.0857824"
+         rx="1.1024867"
+         cy="22.631126"
+         cx="100.56584"
+         id="path2584-8"
+         style="fill:#87de87;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.065;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke fill markers" />
+      <text
+         id="text2588-9"
          y="23.515827"
-         style="font-size:2.82222223px;stroke-width:0.26458332">+</tspan></text>
+         x="99.383484"
+         style="font-style:normal;font-weight:normal;font-size:2.82222223px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-size:2.82222223px;stroke-width:0.26458332"
+           y="23.515827"
+           x="99.383484"
+           id="tspan2586-8"
+           sodipodi:role="line">+</tspan></text>
+    </g>
     <path
        style="fill:none;stroke:#000000;stroke-width:0.565;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
        d="m 107.97116,35.075862 c 0,-4.100915 0,-4.100915 0,-4.100915"
@@ -723,24 +729,27 @@
        d="m 122.94398,40.020348 c 0,1.00226 1.36976,1.00226 1.36976,1.00226"
        id="path2844"
        inkscape:connector-curvature="0" />
-    <ellipse
-       style="fill:#87de87;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.08992126;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke fill markers"
-       id="path2846"
-       cx="122.88952"
-       cy="26.274553"
-       rx="3.7673011"
-       ry="1.4994441" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:2.82222223px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="120.15299"
-       y="27.195169"
-       id="text2852"><tspan
-         sodipodi:role="line"
-         id="tspan2850"
-         x="120.15299"
+    <g
+       id="g1037">
+      <ellipse
+         ry="1.4994441"
+         rx="3.7673011"
+         cy="26.274553"
+         cx="122.88952"
+         id="path2846"
+         style="fill:#87de87;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.08992126;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke fill markers" />
+      <text
+         id="text2852"
          y="27.195169"
-         style="font-size:2.46944451px;stroke-width:0.26458332">tanh</tspan></text>
+         x="120.15299"
+         style="font-style:normal;font-weight:normal;font-size:2.82222223px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-size:2.46944451px;stroke-width:0.26458332"
+           y="27.195169"
+           x="120.15299"
+           id="tspan2850"
+           sodipodi:role="line">tanh</tspan></text>
+    </g>
     <path
        style="fill:none;stroke:#000000;stroke-width:0.565;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
        d="m 128.97012,8.2734371 c 0,13.3236609 0,13.3236609 0,13.3236609"
